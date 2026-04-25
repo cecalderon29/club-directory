@@ -1,5 +1,10 @@
-import fs from 'fs';
-import path from 'path';
+import computerScience from './computer-science.json';
+import drama from './drama.json';
+import hikingOutdoors from './hiking-outdoors.json';
+import keyClub from './key-club.json';
+import kpopDance from './kpop-dance.json';
+import mathTeam from './math-team.json';
+import robotics from './robotics.json';
 
 export interface Club {
   id: number;
@@ -16,40 +21,40 @@ export interface Club {
   images: string[];
 }
 
-const dataDir = path.join(process.cwd(), 'app', 'data');
+export interface CalendarEvent {
+  name: string;
+  date: string;
+  clubId: number;
+  clubName: string;
+  clubCategory: string;
+  location: string;
+  time: string;
+  isFavorite: boolean;
+}
+
+const allClubs: Club[] = [
+  computerScience,
+  drama,
+  hikingOutdoors,
+  keyClub,
+  kpopDance,
+  mathTeam,
+  robotics,
+].sort((a, b) => (a as Club).id - (b as Club).id) as Club[];
 
 export function getClubs(): Club[] {
-  const clubs: Club[] = [];
-  
-  // Read all JSON files in the data directory
-  const files = fs.readdirSync(dataDir).filter(file => file.endsWith('.json'));
-  
-  for (const file of files) {
-    // Skip the images directory if it has a .json extension
-    if (file === 'images') continue;
-    
-    const filePath = path.join(dataDir, file);
-    const fileContent = fs.readFileSync(filePath, 'utf-8');
-    const clubData = JSON.parse(fileContent);
-    
-    clubs.push(clubData);
-  }
-  
-  // Sort by ID
-  clubs.sort((a, b) => a.id - b.id);
-  
-  return clubs;
+  return allClubs;
 }
 
 export function getCategories(clubs: Club[]): string[] {
   const categories = new Set<string>();
-  
+
   for (const club of clubs) {
     if (club.category) {
       categories.add(club.category);
     }
   }
-  
+
   // Return sorted categories with 'All' and 'Favorites' at the beginning
   return ['All', 'Favorites', ...Array.from(categories).sort()];
 }

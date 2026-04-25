@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useMemo } from 'react';
 import { 
   ChevronLeft, 
@@ -198,7 +200,7 @@ const CalendarPage = ({ clubsData: propClubs }: { clubsData?: Club[] }) => {
             <div className="bg-zinc-900 rounded-[2rem] p-6 text-white shadow-xl relative overflow-hidden">
               <h4 className="text-xl font-black mb-2 relative z-10 text-red-500 uppercase italic tracking-tighter">School Spirit</h4>
               <p className="text-zinc-300 text-xs leading-relaxed font-bold relative z-10">
-                Favorited club events are highlighted in <span className="text-amber-400 underline decoration-2">Gold</span>. Don't forget to check the directory for new clubs!
+                Favorited club events are highlighted in <span className="text-amber-400 underline decoration-2">Gold</span>. Don&apos;t forget to check the directory for new clubs!
               </p>
               <div className="absolute -right-8 -bottom-8 opacity-10 rotate-12">
                 <CalendarIcon size={120} />
