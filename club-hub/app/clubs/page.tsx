@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from 'react';
 import { getClubs, getCategories, Club } from '../data/clubs';
 import { ClubCard } from './components/ClubCard';
