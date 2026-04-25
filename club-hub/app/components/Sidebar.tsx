@@ -16,7 +16,7 @@ interface SidebarProps {
   isDarkMode: boolean;
   setIsDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
   activeTab: string;
-  setActiveTab: React.Dispatch<React.SetStateAction<string>>;
+  onNavigate: (path: string) => void;
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isCollapsed: boolean;
@@ -28,7 +28,7 @@ interface SidebarProps {
 /**
  * Sidebar Component
  */
-const Sidebar: React.FC<SidebarProps> = ({ isDarkMode, setIsDarkMode, activeTab, setActiveTab, isOpen, setIsOpen, isCollapsed, setIsCollapsed, isSignedIn, setIsSignedIn }) => {
+const Sidebar: React.FC<SidebarProps> = ({ isDarkMode, setIsDarkMode, activeTab, onNavigate, isOpen, setIsOpen, isCollapsed, setIsCollapsed, isSignedIn, setIsSignedIn }) => {
   return (
     <>
       {isOpen && (
@@ -66,9 +66,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isDarkMode, setIsDarkMode, activeTab,
         </div>
 
         <nav className="flex-1 px-2 space-y-1 overflow-y-auto overflow-x-hidden">
-          <NavItem id="home" label="Home" icon={<Home size={20} />} activeId={activeTab} onClick={setActiveTab} isCollapsed={isCollapsed} />
-          <NavItem id="clubs" label="Clubs" icon={<Users size={20} />} activeId={activeTab} onClick={setActiveTab} isCollapsed={isCollapsed} />
-          <NavItem id="calendar" label="Calendar" icon={<CalendarIcon size={20} />} activeId={activeTab} onClick={setActiveTab} isCollapsed={isCollapsed} />
+          <NavItem id="home" label="Home" icon={<Home size={20} />} href="/dashboard" activeId={activeTab} onNavigate={onNavigate} isCollapsed={isCollapsed} />
+          <NavItem id="clubs" label="Clubs" icon={<Users size={20} />} href="/clubs" activeId={activeTab} onNavigate={onNavigate} isCollapsed={isCollapsed} />
+          <NavItem id="calendar" label="Calendar" icon={<CalendarIcon size={20} />} href="/calendar" activeId={activeTab} onNavigate={onNavigate} isCollapsed={isCollapsed} />
         </nav>
 
         <div className={`p-2 mt-auto border-t border-[var(--border)] space-y-2 ${isCollapsed ? 'items-center' : ''}`}>

@@ -10,7 +10,7 @@ interface CategoryFilterProps {
 export function CategoryFilter({ categories, selectedCategory, onSelectCategory }: CategoryFilterProps) {
   return (
     <>
-      <div className="mb-4 text-white/90 text-sm font-bold uppercase tracking-widest">Filter by Category:</div>
+      <div className="mb-4 text-[var(--text-secondary)] text-sm font-bold uppercase tracking-widest">Filter by Category:</div>
       <div className="flex flex-wrap justify-center gap-3 md:gap-4 max-w-4xl mx-auto">
         {categories.map(category => {
           const isFavorites = category === 'Favorites';
@@ -21,12 +21,12 @@ export function CategoryFilter({ categories, selectedCategory, onSelectCategory 
               onClick={() => onSelectCategory(category)}
               className={`px-6 py-3 rounded-full text-base font-bold transition-all flex items-center gap-2 ${
                 isActive 
-                  ? 'bg-white text-orange-600 shadow-xl scale-105' 
-                  : 'bg-black/20 text-white hover:bg-black/30 backdrop-blur-md shadow-sm'
+                  ? 'bg-[var(--accent)] text-[var(--text-inverse)] shadow-xl scale-105' 
+                  : 'bg-[var(--surface)] text-[var(--text-primary)] hover:bg-[var(--hover-surface)] backdrop-blur-md shadow-sm border border-[var(--border)]'
               }`}
             >
               {isFavorites && (
-                <Heart size={16} className={isActive ? 'fill-red-500 text-red-500' : 'fill-white text-white'} />
+                <Heart size={16} className={isActive ? 'fill-[var(--text-inverse)] text-[var(--text-inverse)]' : 'fill-[var(--accent)] text-[var(--accent)]'} />
               )}
               {category}
             </button>

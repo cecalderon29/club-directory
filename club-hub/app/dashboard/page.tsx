@@ -5,7 +5,7 @@ import BackgroundDecorations from './components/BackgroundDecorations';
 
 export default function App() {
   return (
-    <div className="relative">
+    <div className="relative h-full overflow-y-auto">
       <BackgroundDecorations />
       <div className="p-4 md:p-6 lg:p-8">
         <div className="max-w-5xl mx-auto space-y-6">
@@ -100,14 +100,18 @@ export default function App() {
                       </div>
                       <div>
                         <div className="font-bold text-xs leading-none mb-1">{evt.title}</div>
-                        <div className="text-[9px] font-black uppercase tracking-widest text-[var(--text-muted)]">
+                        <div
+                          className={`text-[9px] font-black uppercase tracking-widest ${
+                            evt.accent ? 'text-[var(--text-inverse)]/90' : 'text-[var(--text-muted)]'
+                          }`}
+                        >
                           {evt.loc}
                         </div>
                       </div>
                     </div>
                     <div
                       className={`text-[10px] font-black italic ${
-                        evt.accent ? 'text-(--text-inverse)' : 'text-[var(--accent)]'
+                        evt.accent ? 'text-[var(--text-inverse)]' : 'text-[var(--accent)]'
                       }`}
                     >
                       {evt.time}

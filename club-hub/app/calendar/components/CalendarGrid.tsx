@@ -18,17 +18,17 @@ export function CalendarGrid({ days, blanks, getEventsForDay, today, year, month
   };
 
   return (
-    <div className="grid grid-cols-7 gap-px bg-zinc-300 border-2 border-zinc-300">
+    <div className="grid grid-cols-7 gap-px bg-[var(--border)] border-2 border-[var(--border)]">
       {/* Day Headers */}
       {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-        <div key={day} className="bg-zinc-100 p-2 text-center text-xs font-black uppercase tracking-widest text-zinc-600">
+        <div key={day} className="bg-[var(--surface-soft)] p-2 text-center text-xs font-black uppercase tracking-widest text-[var(--text-secondary)]">
           {day}
         </div>
       ))}
 
       {/* Blank cells for days before the 1st of month */}
       {blanks.map(i => (
-        <div key={`blank-${i}`} className="bg-zinc-50 min-h-[120px] sm:min-h-[140px]" />
+        <div key={`blank-${i}`} className="bg-[var(--surface)] min-h-[120px] sm:min-h-[140px]" />
       ))}
 
       {/* Day cells */}
@@ -39,11 +39,11 @@ export function CalendarGrid({ days, blanks, getEventsForDay, today, year, month
         return (
           <div 
             key={day} 
-            className={`bg-white min-h-[120px] sm:min-h-[140px] p-2 transition-colors ${
-              isCurrentDay ? 'bg-orange-50' : 'hover:bg-zinc-50'
+            className={`bg-[var(--surface-strong)] min-h-[120px] sm:min-h-[140px] p-2 transition-colors ${
+              isCurrentDay ? 'bg-[var(--accent-soft)]' : 'hover:bg-[var(--hover-surface)]'
             }`}
           >
-            <div className={`text-sm font-black mb-1 ${isCurrentDay ? 'text-red-600' : 'text-zinc-700'}`}>
+            <div className={`text-sm font-black mb-1 ${isCurrentDay ? 'text-[var(--accent)]' : 'text-[var(--text-secondary)]'}`}>
               {day}
             </div>
             <div className="space-y-1">
@@ -52,15 +52,15 @@ export function CalendarGrid({ days, blanks, getEventsForDay, today, year, month
                   key={i}
                   className={`text-[10px] px-1.5 py-0.5 rounded truncate font-bold ${
                     evt.isFavorite 
-                      ? 'bg-red-100 text-red-700 border border-red-200' 
-                      : 'bg-zinc-100 text-zinc-700 border border-zinc-200'
+                      ? 'bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent)]/25' 
+                      : 'bg-[var(--surface-soft)] text-[var(--text-secondary)] border border-[var(--border)]'
                   }`}
                 >
                   {evt.clubName}
                 </div>
               ))}
               {dayEvents.length > 3 && (
-                <div className="text-[10px] text-zinc-500 font-bold">
+                <div className="text-[10px] text-[var(--text-muted)] font-bold">
                   +{dayEvents.length - 3} more
                 </div>
               )}

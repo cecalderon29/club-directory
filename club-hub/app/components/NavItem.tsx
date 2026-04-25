@@ -4,19 +4,20 @@ interface NavItemProps {
   icon: React.ReactNode;
   label: string;
   id: string;
+  href: string;
   activeId: string;
-  onClick: (id: string) => void;
+  onNavigate: (href: string) => void;
   isCollapsed: boolean;
 }
 
 /**
  * NavItem Component
  */
-const NavItem: React.FC<NavItemProps> = ({ icon, label, id, activeId, onClick, isCollapsed }) => {
+const NavItem: React.FC<NavItemProps> = ({ icon, label, id, href, activeId, onNavigate, isCollapsed }) => {
   const active = id === activeId;
   return (
     <button
-      onClick={() => onClick(id)}
+      onClick={() => onNavigate(href)}
       title={isCollapsed ? label : ''}
       className={`
         flex items-center gap-3 w-full px-3 py-2.5 rounded-xl font-bold transition-all duration-200 text-sm

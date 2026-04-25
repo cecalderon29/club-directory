@@ -101,7 +101,7 @@ const CalendarPage = ({ clubsData: propClubs }: { clubsData?: Club[] }) => {
   };
 
   return (
-    <div className="h-full min-h-screen flex flex-col bg-zinc-200 p-4 sm:p-6 font-sans text-black">
+    <div className="h-full w-full flex flex-col overflow-y-auto bg-[var(--background)] p-4 sm:p-6 font-sans text-[var(--text-primary)]">
       <div className="max-w-7xl mx-auto w-full">
         
         {/* Calendar Header Component */}
@@ -115,25 +115,25 @@ const CalendarPage = ({ clubsData: propClubs }: { clubsData?: Club[] }) => {
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
           
           {/* Calendar Main Grid */}
-          <div className="xl:col-span-3 bg-white rounded-[2rem] shadow-xl border-2 border-zinc-300 overflow-hidden">
+          <div className="xl:col-span-3 bg-[var(--surface)] rounded-[2rem] shadow-xl border-2 border-[var(--border)] overflow-hidden">
             
             {/* Nav Header */}
-            <div className="flex items-center justify-between p-6 bg-zinc-50 border-b-2 border-zinc-200">
-              <h2 className="text-3xl font-black text-black">
-                {monthName} <span className="text-zinc-400">{year}</span>
+            <div className="flex items-center justify-between p-6 bg-[var(--surface-soft)] border-b-2 border-[var(--border)]">
+              <h2 className="text-3xl font-black text-[var(--text-primary)]">
+                {monthName} <span className="text-[var(--text-secondary)]">{year}</span>
               </h2>
               
-              <div className="flex items-center gap-2 bg-white border-2 border-zinc-300 rounded-xl p-1 shadow-sm">
-                <button onClick={prevMonth} className="p-2 hover:bg-zinc-100 rounded-lg text-black transition-colors" aria-label="Previous Month">
+              <div className="flex items-center gap-2 bg-[var(--surface-strong)] border-2 border-[var(--border)] rounded-xl p-1 shadow-sm">
+                <button onClick={prevMonth} className="p-2 hover:bg-[var(--hover-surface)] rounded-lg text-[var(--text-primary)] transition-colors" aria-label="Previous Month">
                   <ChevronLeft size={24} />
                 </button>
                 <button 
                   onClick={resetToToday}
-                  className="px-4 py-1.5 text-xs font-black uppercase tracking-widest text-black hover:bg-zinc-100 rounded-lg border border-transparent active:border-zinc-300"
+                  className="px-4 py-1.5 text-xs font-black uppercase tracking-widest text-[var(--text-primary)] hover:bg-[var(--hover-surface)] rounded-lg border border-transparent active:border-[var(--border)]"
                 >
                   Today
                 </button>
-                <button onClick={nextMonth} className="p-2 hover:bg-zinc-100 rounded-lg text-black transition-colors" aria-label="Next Month">
+                <button onClick={nextMonth} className="p-2 hover:bg-[var(--hover-surface)] rounded-lg text-[var(--text-primary)] transition-colors" aria-label="Next Month">
                   <ChevronRight size={24} />
                 </button>
               </div>
@@ -154,55 +154,55 @@ const CalendarPage = ({ clubsData: propClubs }: { clubsData?: Club[] }) => {
 
           {/* Side Panel: Event Feed */}
           <div className="xl:col-span-1 space-y-6">
-            <div className="bg-white rounded-[2rem] p-6 shadow-xl border-2 border-zinc-300">
-              <h3 className="text-sm font-black uppercase tracking-widest text-zinc-500 mb-6 flex items-center gap-2">
-                <Filter size={16} className="text-red-600" /> Featured Events
+            <div className="bg-[var(--surface)] rounded-[2rem] p-6 shadow-xl border-2 border-[var(--border)]">
+              <h3 className="text-sm font-black uppercase tracking-widest text-[var(--text-secondary)] mb-6 flex items-center gap-2">
+                <Filter size={16} className="text-[var(--accent)]" /> Featured Events
               </h3>
               
               <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-1 custom-scrollbar">
                 {filteredEvents.map((event, index) => (
-                  <div key={index} className="bg-zinc-50 rounded-2xl p-4 border-2 border-zinc-200 hover:border-red-500 transition-all group">
+                  <div key={index} className="bg-[var(--surface-soft)] rounded-2xl p-4 border-2 border-[var(--border)] hover:border-[var(--accent)] transition-all group">
                     <div className="flex justify-between items-start mb-2">
-                      <div className="bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded uppercase">
+                      <div className="bg-[var(--accent)] text-[var(--text-inverse)] text-[10px] font-black px-2 py-0.5 rounded uppercase">
                         {event.date}
                       </div>
                       {event.isFavorite && <Star size={14} className="fill-amber-400 text-amber-500" />}
                     </div>
 
-                    <h4 className="font-black text-black text-sm mb-1 leading-tight">
+                    <h4 className="font-black text-[var(--text-primary)] text-sm mb-1 leading-tight">
                       {event.name}
                     </h4>
                     
-                    <p className="text-[11px] font-bold text-zinc-600 mb-3 flex items-center gap-1">
-                      <Users size={12} className="text-zinc-400" /> {event.clubName}
+                    <p className="text-[11px] font-bold text-[var(--text-secondary)] mb-3 flex items-center gap-1">
+                      <Users size={12} className="text-[var(--text-muted)]" /> {event.clubName}
                     </p>
                     
-                    <div className="flex flex-col gap-1 text-[11px] font-black text-zinc-800 pt-3 border-t-2 border-zinc-200">
+                    <div className="flex flex-col gap-1 text-[11px] font-black text-[var(--text-primary)] pt-3 border-t-2 border-[var(--border)]">
                       <div className="flex items-center gap-2">
-                        <Clock size={14} className="text-red-600" /> {event.time}
+                        <Clock size={14} className="text-[var(--accent)]" /> {event.time}
                       </div>
                       <div className="flex items-center gap-2">
-                        <MapPin size={14} className="text-red-600" /> {event.location}
+                        <MapPin size={14} className="text-[var(--accent)]" /> {event.location}
                       </div>
                     </div>
                   </div>
                 ))}
                 
                 {filteredEvents.length === 0 && (
-                  <div className="text-center py-12 px-4 border-2 border-dashed border-zinc-300 rounded-3xl bg-zinc-50">
-                    <p className="text-sm font-black text-zinc-500 italic">No events scheduled for {monthName}.</p>
+                  <div className="text-center py-12 px-4 border-2 border-dashed border-[var(--border)] rounded-3xl bg-[var(--surface-soft)]">
+                    <p className="text-sm font-black text-[var(--text-secondary)] italic">No events scheduled for {monthName}.</p>
                   </div>
                 )}
               </div>
             </div>
 
             {/* Tip Card */}
-            <div className="bg-zinc-900 rounded-[2rem] p-6 text-white shadow-xl relative overflow-hidden">
-              <h4 className="text-xl font-black mb-2 relative z-10 text-red-500 uppercase italic tracking-tighter">School Spirit</h4>
-              <p className="text-zinc-300 text-xs leading-relaxed font-bold relative z-10">
-                Favorited club events are highlighted in <span className="text-amber-400 underline decoration-2">Gold</span>. Don&apos;t forget to check the directory for new clubs!
+            <div className="bg-[var(--surface-strong)] rounded-[2rem] p-6 text-[var(--text-primary)] shadow-xl border-2 border-[var(--border)] relative overflow-hidden">
+              <h4 className="text-xl font-black mb-2 relative z-10 text-[var(--accent)] uppercase italic tracking-tighter">School Spirit</h4>
+              <p className="text-[var(--text-secondary)] text-xs leading-relaxed font-bold relative z-10">
+                Favorited club events are highlighted in <span className="text-red-400 underline decoration-2">Red</span>. Don&apos;t forget to check the directory for new clubs!
               </p>
-              <div className="absolute -right-8 -bottom-8 opacity-10 rotate-12">
+              <div className="absolute -right-8 -bottom-8 opacity-15 rotate-12 text-[var(--accent)]">
                 <CalendarIcon size={120} />
               </div>
             </div>
@@ -215,15 +215,15 @@ const CalendarPage = ({ clubsData: propClubs }: { clubsData?: Club[] }) => {
           width: 6px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
-          background: #f4f4f5;
+          background: var(--surface-soft);
           border-radius: 10px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #d4d4d8;
+          background: var(--border-strong);
           border-radius: 10px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #a1a1aa;
+          background: var(--text-muted);
         }
       `}</style>
     </div>

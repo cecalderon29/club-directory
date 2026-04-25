@@ -13,30 +13,30 @@ export function ClubCard({ club, isFavorite, onClick, onToggleFavorite }: ClubCa
   return (
     <div 
       onClick={onClick}
-      className="bg-white dark:bg-zinc-900 p-8 rounded-3xl cursor-pointer hover:shadow-2xl hover:-translate-y-1 transition-all group shadow-lg relative flex flex-col"
+      className="bg-[var(--surface)] p-8 rounded-3xl cursor-pointer hover:shadow-2xl hover:-translate-y-1 transition-all group shadow-lg relative flex flex-col border border-[var(--border)]"
     >
       {/* Favorite Heart Button */}
       <button 
         onClick={onToggleFavorite}
-        className="absolute top-6 right-6 p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors z-10"
+        className="absolute top-6 right-6 p-2 rounded-full hover:bg-[var(--hover-surface)] transition-colors z-10"
       >
         <Heart 
           size={24} 
-          className={`transition-colors ${isFavorite ? 'fill-red-500 text-red-500' : 'text-zinc-300 dark:text-zinc-600'}`} 
+          className={`transition-colors ${isFavorite ? 'fill-[var(--accent)] text-[var(--accent)]' : 'text-[var(--text-muted)]'}`} 
         />
       </button>
 
       <div className="mb-4">
-        <span className="px-4 py-2 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 text-xs font-black uppercase rounded-full tracking-wider shadow-sm">
+        <span className="px-4 py-2 bg-[var(--accent-soft)] text-[var(--accent)] text-xs font-black uppercase rounded-full tracking-wider shadow-sm">
           {club.category}
         </span>
       </div>
       
-      <h3 className="text-3xl font-black text-zinc-900 dark:text-white mb-3 mt-2 leading-tight group-hover:text-orange-500 dark:group-hover:text-orange-400 transition-colors">
+      <h3 className="text-3xl font-black text-[var(--text-primary)] mb-3 mt-2 leading-tight group-hover:text-[var(--accent)] transition-colors">
         {club.name}
       </h3>
       
-      <p className="text-zinc-600 dark:text-zinc-400 text-sm line-clamp-3 leading-relaxed">
+      <p className="text-[var(--text-secondary)] text-sm line-clamp-3 leading-relaxed">
         {club.description}
       </p>
     </div>

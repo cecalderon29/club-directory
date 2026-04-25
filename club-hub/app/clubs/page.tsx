@@ -11,7 +11,7 @@ import { CategoryFilter } from './components/CategoryFilter';
 const serverClubs = getClubs();
 const CATEGORIES = getCategories(serverClubs);
 
-const ClubsPage = ({ isDarkMode = false }) => {
+const ClubsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedClub, setSelectedClub] = useState<Club | null>(null);
@@ -60,12 +60,12 @@ const ClubsPage = ({ isDarkMode = false }) => {
   };
 
   return (
-    <div className="h-full min-h-screen flex flex-col relative overflow-hidden bg-gradient-to-br from-rose-400 via-orange-400 to-amber-300">
+    <div className="h-full min-h-full flex flex-col relative overflow-hidden bg-[radial-gradient(circle_at_top_right,var(--accent-soft),transparent_45%),linear-gradient(160deg,var(--background),var(--surface-soft))]">
       
       <div className="relative z-10 p-4 sm:p-8 flex flex-col h-full overflow-y-auto">
         {/* Header Section */}
         <div className="text-center mb-10 pt-6">
-          <h1 className="text-5xl md:text-6xl font-black text-white tracking-tight mb-8 drop-shadow-md">
+          <h1 className="text-5xl md:text-6xl font-black text-[var(--text-primary)] tracking-tight mb-8 drop-shadow-md">
             Explore Clubs
           </h1>
           
@@ -93,13 +93,13 @@ const ClubsPage = ({ isDarkMode = false }) => {
               />
             ))
           ) : (
-            <div className="col-span-full text-center py-16 text-white bg-black/10 rounded-3xl backdrop-blur-sm">
-              <p className="font-bold text-xl">
+            <div className="col-span-full text-center py-16 text-[var(--text-primary)] bg-[var(--surface)] border border-[var(--border)] rounded-3xl backdrop-blur-sm">
+              <p className="font-bold text-xl text-[var(--text-secondary)]">
                 {selectedCategory === 'Favorites' ? "You haven't added any favorites yet!" : "No clubs found matching your search."}
               </p>
               <button 
                 onClick={() => { setSearchQuery(''); setSelectedCategory('All'); }}
-                className="mt-6 px-8 py-3 bg-white text-orange-500 rounded-full text-base font-bold shadow-md hover:scale-105 transition-transform"
+                className="mt-6 px-8 py-3 bg-[var(--accent)] text-[var(--text-inverse)] rounded-full text-base font-bold shadow-md hover:scale-105 transition-transform"
               >
                 View All Clubs
               </button>
@@ -112,7 +112,6 @@ const ClubsPage = ({ isDarkMode = false }) => {
       {selectedClub && (
         <ClubModal
           club={selectedClub}
-          isDarkMode={isDarkMode}
           currentImageIndex={currentImageIndex}
           favorites={favorites}
           onClose={() => setSelectedClub(null)}

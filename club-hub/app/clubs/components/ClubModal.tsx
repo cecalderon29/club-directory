@@ -17,7 +17,6 @@ import { Club } from '../../data/clubs';
 
 interface ClubModalProps {
   club: Club;
-  isDarkMode: boolean;
   currentImageIndex: number;
   favorites: number[];
   onClose: () => void;
@@ -29,7 +28,6 @@ interface ClubModalProps {
 
 export function ClubModal({ 
   club, 
-  isDarkMode, 
   currentImageIndex, 
   favorites,
   onClose, 
@@ -47,7 +45,7 @@ export function ClubModal({
         onClick={onClose}
       ></div>
       
-      <div className={`relative w-full max-w-4xl max-h-[95vh] overflow-y-auto flex flex-col rounded-[2rem] shadow-2xl transform transition-all scale-100 ${isDarkMode ? 'bg-zinc-950 text-white' : 'bg-white text-black'}`}>
+      <div className="relative w-full max-w-4xl max-h-[95vh] overflow-hidden flex flex-col rounded-[2rem] shadow-2xl transform transition-all scale-100 bg-[var(--surface-strong)] text-[var(--text-primary)] border border-[var(--border)]">
         
         {/* Close Button */}
         <button 
@@ -57,33 +55,33 @@ export function ClubModal({
           <X size={24} />
         </button>
         
-        <div className="p-8 sm:p-10">
+        <div className="modal-scrollbar max-h-[95vh] overflow-y-auto p-8 sm:p-10">
           {/* Modal Header */}
           <div className="mb-6">
             <div className="flex items-center gap-4 mb-4">
               <h2 className="text-4xl md:text-5xl font-black tracking-tight">{club.name}</h2>
               <button 
                 onClick={onToggleFavorite}
-                className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                className="p-2 rounded-full hover:bg-[var(--hover-surface)] transition-colors"
               >
                 <Heart 
                   size={32} 
-                  className={`transition-colors ${isFavorite ? 'fill-red-500 text-red-500' : 'text-zinc-300 dark:text-zinc-700'}`} 
+                  className={`transition-colors ${isFavorite ? 'fill-[var(--accent)] text-[var(--accent)]' : 'text-[var(--text-muted)]'}`} 
                 />
               </button>
             </div>
             <div className="flex gap-3">
-              <span className={`px-5 py-2 text-sm font-black uppercase rounded-full tracking-wider inline-block ${isDarkMode ? 'bg-orange-500/20 text-orange-400' : 'bg-orange-100 text-orange-600'}`}>
+              <span className="px-5 py-2 text-sm font-black uppercase rounded-full tracking-wider inline-block bg-[var(--accent-soft)] text-[var(--accent)]">
                 {club.category}
               </span>
-              <span className={`px-5 py-2 text-sm font-black uppercase rounded-full tracking-wider inline-block ${isDarkMode ? 'bg-zinc-800 text-zinc-300' : 'bg-zinc-100 text-zinc-600'}`}>
+              <span className="px-5 py-2 text-sm font-black uppercase rounded-full tracking-wider inline-block bg-[var(--surface-soft)] text-[var(--text-secondary)]">
                 Social
               </span>
             </div>
           </div>
 
           {/* Photo Carousel */}
-          <div className="relative mb-10 rounded-3xl overflow-hidden aspect-video bg-zinc-100 dark:bg-zinc-900 shadow-inner group">
+          <div className="relative mb-10 rounded-3xl overflow-hidden aspect-video bg-[var(--surface-soft)] shadow-inner group border border-[var(--border)]">
             {club.images && club.images.length > 0 ? (
               <>
                 <img 
@@ -114,7 +112,7 @@ export function ClubModal({
                 )}
               </>
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-zinc-400">No photos available</div>
+              <div className="w-full h-full flex items-center justify-center text-[var(--text-muted)]">No photos available</div>
             )}
           </div>
           
@@ -125,7 +123,7 @@ export function ClubModal({
             <div className="lg:col-span-2 space-y-8">
               <div>
                 <h3 className="text-xl font-black uppercase tracking-tight mb-3">About Us</h3>
-                <p className={`text-base leading-relaxed ${isDarkMode ? 'text-zinc-300' : 'text-zinc-600'}`}>
+                <p className="text-base leading-relaxed text-[var(--text-secondary)]">
                   {club.description}
                 </p>
               </div>
@@ -133,14 +131,14 @@ export function ClubModal({
               {club.events && club.events.length > 0 && (
                 <div>
                   <h3 className="text-xl font-black uppercase tracking-tight mb-4 flex items-center gap-2">
-                    <CalendarDays size={20} className="text-red-500" /> 
+                    <CalendarDays size={20} className="text-[var(--accent)]" /> 
                     Upcoming Events
                   </h3>
                   <div className="space-y-3">
                     {club.events.map((evt: { name: string; date: string }, i: number) => (
-                      <div key={i} className={`flex justify-between items-center p-4 rounded-2xl border ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-zinc-50 border-zinc-100'}`}>
+                      <div key={i} className="flex justify-between items-center p-4 rounded-2xl border bg-[var(--surface-soft)] border-[var(--border)]">
                         <span className="font-bold">{evt.name}</span>
-                        <span className="text-xs font-black text-red-500 uppercase tracking-widest">{evt.date}</span>
+                        <span className="text-xs font-black text-[var(--accent)] uppercase tracking-widest">{evt.date}</span>
                       </div>
                     ))}
                   </div>
@@ -151,28 +149,28 @@ export function ClubModal({
             {/* Right Column (Logistics, Socials, Sponsor) */}
             <div className="space-y-6">
               {/* Logistics Box */}
-              <div className={`p-6 rounded-3xl space-y-5 border ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-orange-50/50 border-orange-100'}`}>
+              <div className="p-6 rounded-3xl space-y-5 border bg-[var(--surface-soft)] border-[var(--border)]">
                 <div className="flex items-start gap-4">
-                  <Clock size={20} className="text-orange-500 shrink-0 mt-0.5" />
+                  <Clock size={20} className="text-[var(--accent)] shrink-0 mt-0.5" />
                   <div>
-                    <div className="text-[10px] font-black uppercase text-zinc-500 tracking-wider">Meets On</div>
+                    <div className="text-[10px] font-black uppercase text-[var(--text-muted)] tracking-wider">Meets On</div>
                     <div className="font-bold text-sm">{club.day}</div>
-                    <div className="font-medium text-sm text-zinc-500">{club.time}</div>
+                    <div className="font-medium text-sm text-[var(--text-secondary)]">{club.time}</div>
                   </div>
                 </div>
                 
                 <div className="flex items-start gap-4">
-                  <MapPin size={20} className="text-orange-500 shrink-0 mt-0.5" />
+                  <MapPin size={20} className="text-[var(--accent)] shrink-0 mt-0.5" />
                   <div>
-                    <div className="text-[10px] font-black uppercase text-zinc-500 tracking-wider">Room</div>
+                    <div className="text-[10px] font-black uppercase text-[var(--text-muted)] tracking-wider">Room</div>
                     <div className="font-bold text-sm">{club.location}</div>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <DollarSign size={20} className="text-orange-500 shrink-0 mt-0.5" />
+                  <DollarSign size={20} className="text-[var(--accent)] shrink-0 mt-0.5" />
                   <div>
-                    <div className="text-[10px] font-black uppercase text-zinc-500 tracking-wider">Club Dues</div>
+                    <div className="text-[10px] font-black uppercase text-[var(--text-muted)] tracking-wider">Club Dues</div>
                     <div className="font-bold text-sm">{club.dues}</div>
                   </div>
                 </div>
@@ -180,21 +178,21 @@ export function ClubModal({
 
               {/* Connect / Socials */}
               {club.socials && (
-                <div className={`p-6 rounded-3xl border ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-100 shadow-sm'}`}>
-                  <div className="text-[10px] font-black uppercase text-zinc-500 tracking-wider mb-3">Connect With Us</div>
+                <div className="p-6 rounded-3xl border bg-[var(--surface)] border-[var(--border)] shadow-sm">
+                  <div className="text-[10px] font-black uppercase text-[var(--text-muted)] tracking-wider mb-3">Connect With Us</div>
                   <div className="flex flex-wrap gap-3">
                     {club.socials.instagram && (
-                      <a href="#" className="p-3 rounded-xl transition-all bg-pink-50 dark:bg-pink-950/40 text-pink-500 dark:text-pink-400 hover:bg-pink-100 dark:hover:bg-pink-900/50" title="Instagram">
+                      <a href="#" className="p-3 rounded-xl transition-all bg-[var(--surface-soft)] text-[var(--accent)] hover:bg-[var(--accent-soft)]" title="Instagram">
                         <Camera size={18} />
                       </a>
                     )}
                     {club.socials.twitter && (
-                      <a href="#" className="p-3 rounded-xl transition-all bg-sky-50 dark:bg-sky-950/40 text-sky-400 dark:text-sky-300 hover:bg-sky-100 dark:hover:bg-sky-900/50" title="Twitter">
+                      <a href="#" className="p-3 rounded-xl transition-all bg-[var(--surface-soft)] text-[var(--text-primary)] hover:bg-[var(--hover-surface)]" title="Twitter">
                         <Bird size={18} />
                       </a>
                     )}
                     {club.socials.remind && (
-                      <a href="#" className="flex items-center gap-2 px-4 py-3 rounded-xl font-bold text-xs transition-all bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-800/50" title="Remind Code">
+                      <a href="#" className="flex items-center gap-2 px-4 py-3 rounded-xl font-bold text-xs transition-all bg-[var(--surface-soft)] text-[var(--text-primary)] border border-[var(--border)] hover:bg-[var(--hover-surface)]" title="Remind Code">
                         <LinkIcon size={16} /> {club.socials.remind}
                       </a>
                     )}
@@ -204,10 +202,10 @@ export function ClubModal({
 
               {/* Sponsor */}
               {club.sponsor && (
-                <div className={`p-6 rounded-3xl border ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-100 shadow-sm'}`}>
-                  <div className="text-[10px] font-black uppercase text-zinc-500 tracking-wider mb-2">Club Sponsor</div>
+                <div className="p-6 rounded-3xl border bg-[var(--surface)] border-[var(--border)] shadow-sm">
+                  <div className="text-[10px] font-black uppercase text-[var(--text-muted)] tracking-wider mb-2">Club Sponsor</div>
                   <div className="font-bold text-sm mb-1">{club.sponsor.name}</div>
-                  <a href={`mailto:${club.sponsor.email}`} className="flex items-center gap-2 text-xs font-bold text-orange-600 dark:text-orange-400 hover:underline">
+                  <a href={`mailto:${club.sponsor.email}`} className="flex items-center gap-2 text-xs font-bold text-[var(--accent)] hover:underline">
                     <Mail size={14} /> Email Sponsor
                   </a>
                 </div>
