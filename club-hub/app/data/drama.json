@@ -1,0 +1,26 @@
+{
+    "id": 3,
+    "name": "Drama Club",
+    "category": "Arts",
+    "description": "Actors, tech crew, and set designers wanted! We put on a fall play and a spring musical every year. Come express yourself on stage or help us build the magic behind the scenes.",
+    "time": "3:30 PM - 5:00 PM",
+    "day": "Tuesdays",
+    "location": "Main Auditorium",
+    "dues": "$10 / Year",
+    "sponsor": {
+        "name": "Mr. Shakespeare",
+        "email": "drama@school.edu"
+    },
+    "socials": {
+        "instagram": "@nchs_drama",
+        "remind": "@actnow"
+    },
+    "events": [
+        { "name": "Fall Play Auditions", "date": "Sept 12" },
+        { "name": "Tech Crew Info Session", "date": "Sept 14" }
+    ],
+    "images": [
+        "https://images.unsplash.com/photo-1507676184212-d0330a15233c?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1460723237483-7a6dc9d0b212?auto=format&fit=crop&w=800&q=80"
+    ]
+}

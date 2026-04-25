@@ -1,0 +1,26 @@
+{
+    "id": 4,
+    "name": "Hiking & Outdoors",
+    "category": "Sports",
+    "description": "Explore local trails, learn wilderness survival basics, and enjoy the great outdoors together. A great way to destress and get some fresh air after a long week of classes.",
+    "time": "9:00 AM - 12:00 PM",
+    "day": "Saturdays",
+    "location": "Front Gates",
+    "dues": "Free",
+    "sponsor": {
+        "name": "Ms. Ranger",
+        "email": "ranger@school.edu"
+    },
+    "socials": {
+        "instagram": "@nchs_hikes",
+        "remind": "@hike24"
+    },
+    "events": [
+        { "name": "Starved Rock Trip", "date": "Sept 20" },
+        { "name": "Local Trail Cleanup", "date": "Oct 5" }
+    ],
+    "images": [
+        "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80"
+    ]
+}

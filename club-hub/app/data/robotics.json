@@ -1,0 +1,27 @@
+{
+    "id": 2,
+    "name": "Robotics Team",
+    "category": "STEM",
+    "description": "Design, build, and program robots for regional competitions. No prior coding experience required!",
+    "time": "4:00 PM - 5:30 PM",
+    "day": "Thursdays",
+    "location": "Tech Lab A",
+    "dues": "$25 / Semester",
+    "sponsor": {
+        "name": "Ms. Lovelace",
+        "email": "lovelace@school.edu"
+    },
+    "socials": {
+        "instagram": "@nchs_robotics",
+        "twitter": "@nchs_robo",
+        "remind": "@robo24"
+    },
+    "events": [
+        { "name": "Kickoff Meeting", "date": "Sept 10" },
+        { "name": "Regional Build Day", "date": "Oct 15" }
+    ],
+    "images": [
+        "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1563207153-f404dc01995d?auto=format&fit=crop&w=800&q=80"
+    ]
+}

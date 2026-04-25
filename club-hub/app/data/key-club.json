@@ -1,0 +1,26 @@
+{
+    "id": 7,
+    "name": "Key Club",
+    "category": "Service",
+    "description": "An international student-led organization providing its members with opportunities to provide service, build character, and develop leadership.",
+    "time": "7:00 AM - 7:45 AM",
+    "day": "Fridays",
+    "location": "Main Cafe",
+    "dues": "$20 / Year",
+    "sponsor": {
+        "name": "Ms. Helper",
+        "email": "helper@school.edu"
+    },
+    "socials": {
+        "instagram": "@nchs_keyclub",
+        "remind": "@nchskey"
+    },
+    "events": [
+        { "name": "Food Drive", "date": "Oct 10-14" },
+        { "name": "Park Cleanup", "date": "Oct 22" }
+    ],
+    "images": [
+        "https://images.unsplash.com/photo-1593113565694-c6f8716c0296?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=800&q=80"
+    ]
+}

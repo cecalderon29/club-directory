@@ -1,0 +1,26 @@
+
+{
+    "id": 1,
+    "name": "Computer Science Club",
+    "category": "STEM",
+    "description": "Design, build, and program with peers. No prior coding experience required!",
+    "time": "7:00 AM - 7:37 AM",
+    "day": "Tuesdays",
+    "location": "Tech Lab A",
+    "dues": "$5 / Semester",
+    "sponsor": {
+        "name": "Derek Miller",
+        "email": "djmiller@naperville203.org"
+    },
+    "socials": {
+        "instagram": "@nchs_csclub",
+        "twitter": "",
+    "remind": "@csclub27"
+    },
+    "events": [
+        { "name": "Kickoff Meeting", "date": "Sept 10" }
+    ],
+    "images": [
+        "../images/comp-sci.jpg"
+    ]
+}

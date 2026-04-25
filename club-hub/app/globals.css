@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Funnel+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+:root {
+  --background: #ffffff;
+  --foreground: #111827;
+
+  --surface: rgba(255,255,255,0.82);
+  --surface-strong: rgba(255,255,255,0.94);
+  --surface-soft: rgba(248,250,252,0.75);
+  --surface-muted: #f8fafc;
+
+  --border: #e5e7eb;
+  --border-strong: #d6d3d1;
+
+  --text-primary: #0f172a;
+  --text-secondary: #52525b;
+  --text-muted: #71717a;
+  --text-inverse: #ffffff;
+
+  --accent: #dc2626;
+  --accent-strong: #b91c1c;
+  --accent-soft: rgba(220,38,38,0.1);
+
+  --shadow-accent: 0 24px 80px -36px rgba(220,38,38,0.28);
+  --shadow-card: 0 20px 50px -30px rgba(220,38,38,0.15);
+
+  --overlay: rgba(0,0,0,0.5);
+  --hover-surface: rgba(248,250,252,0.95);
+  --hover-surface-strong: rgba(255,255,255,0.9);
+}
+
+.dark {
+  --background: #09090a;
+  --foreground: #f8fafc;
+
+  --surface: rgba(15,23,42,0.8);
+  --surface-strong: rgba(15,23,42,0.92);
+  --surface-soft: rgba(255,255,255,0.08);
+  --surface-muted: #111827;
+
+  --border: #27272a;
+  --border-strong: #3f3f46;
+
+  --text-primary: #f8fafc;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --text-inverse: #ffffff;
+
+  --accent: #dc2626;
+  --accent-strong: #f87171;
+  --accent-soft: rgba(220,38,38,0.12);
+
+  --shadow-accent: 0 24px 80px -36px rgba(220,38,38,0.55);
+  --shadow-card: 0 20px 50px -30px rgba(0,0,0,0.35);
+
+  --overlay: rgba(0,0,0,0.55);
+  --hover-surface: rgba(255,255,255,0.08);
+  --hover-surface-strong: rgba(255,255,255,0.12);
+}
+
+html,
+body {
+  min-height: 100%;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+body {
+  margin: 0;
+  font-family: 'Funnel Sans', Sans-serif;
+}
