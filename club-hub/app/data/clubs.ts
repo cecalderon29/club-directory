@@ -40,7 +40,7 @@ const allClubs: Club[] = [
   kpopDance,
   mathTeam,
   robotics,
-].sort((a, b) => (a as Club).id - (b as Club).id) as Club[];
+].sort((a, b) => a.id - b.id);
 
 export function getClubs(): Club[] {
   return allClubs;
