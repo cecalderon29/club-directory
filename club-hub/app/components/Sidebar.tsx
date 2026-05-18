@@ -28,7 +28,7 @@ interface SidebarProps {
 /**
  * Sidebar Component
  */
-const Sidebar: React.FC<SidebarProps> = ({ isDarkMode, setIsDarkMode, activeTab, onNavigate, isOpen, setIsOpen, isCollapsed, setIsCollapsed, isSignedIn, setIsSignedIn }) => {
+const SidebarComponent: React.FC<SidebarProps> = ({ isDarkMode, setIsDarkMode, activeTab, onNavigate, isOpen, setIsOpen, isCollapsed, setIsCollapsed, isSignedIn, setIsSignedIn }) => {
   return (
     <>
       {isOpen && (
@@ -42,24 +42,24 @@ const Sidebar: React.FC<SidebarProps> = ({ isDarkMode, setIsDarkMode, activeTab,
         fixed inset-y-0 left-0 z-50 transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
         ${isCollapsed ? 'w-16' : 'w-64'}
-        bg-[var(--surface)] border-[var(--border)] text-[var(--text-primary)]
+        bg-(--surface) border-(--border) text-(--text-primary)
         flex flex-col border-r h-full backdrop-blur-xl
       `}>
         <div className={`p-4 mb-2 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
           <div className="flex items-center gap-2">
-            <div className="bg-[var(--accent)] text-[var(--text-inverse)] p-1.5 rounded-lg shadow-md shadow-[var(--shadow-accent)]">
+            <div className="bg-(--accent) text-(--text-inverse) p-1.5 rounded-lg shadow-md">
               <Users size={18} strokeWidth={3} />
             </div>
             {!isCollapsed && (
               <h1 className="text-lg font-black tracking-tight italic uppercase leading-none">
-                Club<span className="text-[var(--accent)]">Hub</span>
+                Club<span className="text-(--accent)">Hub</span>
               </h1>
             )}
           </div>
 
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="hidden lg:flex items-center justify-center w-6 h-6 rounded-full border border-[var(--border)] bg-[var(--surface-strong)] text-[var(--text-secondary)] absolute -right-3 top-6 shadow-sm hover:text-[var(--accent)]"
+            className="hidden lg:flex items-center justify-center w-6 h-6 rounded-full border border-(--border) bg-(--surface-strong) text-(--text-secondary) absolute -right-3 top-6 shadow-sm hover:text-(--accent)"
           >
             {isCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
           </button>
@@ -71,13 +71,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isDarkMode, setIsDarkMode, activeTab,
           <NavItem id="calendar" label="Calendar" icon={<CalendarIcon size={20} />} href="/calendar" activeId={activeTab} onNavigate={onNavigate} isCollapsed={isCollapsed} />
         </nav>
 
-        <div className={`p-2 mt-auto border-t border-[var(--border)] space-y-2 ${isCollapsed ? 'items-center' : ''}`}>
-          <div className={`flex items-center rounded-xl overflow-hidden bg-[var(--surface-muted)] ${isCollapsed ? 'flex-col p-1' : 'p-0.5'}`}>
+        <div className={`p-2 mt-auto border-t border-(--border) space-y-2 ${isCollapsed ? 'items-center' : ''}`}>
+          <div className={`flex items-center rounded-xl overflow-hidden bg-(--surface-muted) ${isCollapsed ? 'flex-col p-1' : 'p-0.5'}`}>
             <button
               onClick={() => setIsDarkMode(false)}
               className={`flex items-center justify-center rounded-lg text-[9px] font-black uppercase transition-all
                 ${isCollapsed ? 'w-8 h-8' : 'flex-1 py-1.5 gap-1.5'}
-                ${!isDarkMode ? 'bg-[var(--surface-strong)] shadow-sm text-[var(--accent)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-muted)]'}`}
+                ${!isDarkMode ? 'bg-(--surface-strong)ow-sm text-(--accent)' : 'text-(--text-secondary) hover:text-(--text-muted)'}`}
             >
               <Sun size={12} /> {!isCollapsed && 'Light'}
             </button>
@@ -85,7 +85,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isDarkMode, setIsDarkMode, activeTab,
               onClick={() => setIsDarkMode(true)}
               className={`flex items-center justify-center rounded-lg text-[9px] font-black uppercase transition-all
                 ${isCollapsed ? 'w-8 h-8' : 'flex-1 py-1.5 gap-1.5'}
-                ${isDarkMode ? 'bg-[var(--surface-strong)] shadow-sm text-[var(--accent)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-muted)]'}`}
+                ${isDarkMode ? 'bg-(--surface-strong) shadow-sm text-(--accent)' : 'text-(--text-secondary) hover:text-(--text-muted)'}`}
             >
               <Moon size={12} /> {!isCollapsed && 'Dark'}
             </button>
@@ -93,12 +93,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isDarkMode, setIsDarkMode, activeTab,
 
           <div className="pt-1">
             {!isSignedIn ? (
-              <button onClick={() => setIsSignedIn(true)} className={`flex items-center gap-2 w-full p-2.5 rounded-xl font-black italic uppercase text-[10px] transition-all bg-[var(--accent)] text-[var(--text-inverse)] hover:bg-[var(--accent-strong)] shadow-md shadow-[var(--shadow-accent)] group ${isCollapsed ? 'justify-center' : ''}`}>
+              <button onClick={() => setIsSignedIn(true)} className={`flex items-center gap-2 w-full p-2.5 rounded-xl font-black italic uppercase text-[10px] transition-all bg-(--accent) text-(--text-inverse) hover:bg-(--accent-strong) shadow-(--shadow-accent) group ${isCollapsed ? 'justify-center' : ''}`}>
                 <LogIn size={18} className="group-hover:translate-x-1 transition-transform shrink-0" />
                 {!isCollapsed && 'Sign In'}
               </button>
             ) : (
-              <button onClick={() => setIsSignedIn(false)} className={`flex items-center gap-2 w-full p-2.5 rounded-xl font-black italic uppercase text-[10px] text-[var(--text-muted)] hover:text-[var(--accent)] transition-all ${isCollapsed ? 'justify-center' : ''}`}>
+              <button onClick={() => setIsSignedIn(false)} className={`flex items-center gap-2 w-full p-2.5 rounded-xl font-black italic uppercase text-[10px] text-(--text-muted) hover:text-(--accent) transition-all ${isCollapsed ? 'justify-center' : ''}`}>
                 <LogOut size={18} className="shrink-0" />
                 {!isCollapsed && 'Sign Out'}
               </button>
@@ -110,4 +110,4 @@ const Sidebar: React.FC<SidebarProps> = ({ isDarkMode, setIsDarkMode, activeTab,
   );
 };
 
-export default Sidebar;
+export default React.memo(SidebarComponent);

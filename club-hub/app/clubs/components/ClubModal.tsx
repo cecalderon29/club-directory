@@ -26,7 +26,7 @@ interface ClubModalProps {
   onImageIndexChange: (index: number) => void;
 }
 
-export function ClubModal({ 
+const ClubModalComponent = ({ 
   club, 
   currentImageIndex, 
   favorites,
@@ -35,7 +35,7 @@ export function ClubModal({
   onNextImage,
   onPrevImage,
   onImageIndexChange
-}: ClubModalProps) {
+}: ClubModalProps) => {
   const isFavorite = favorites.includes(club.id);
 
   return (
@@ -86,7 +86,9 @@ export function ClubModal({
               <>
                 <img 
                   src={club.images[currentImageIndex]} 
-                  alt={club.name} 
+                  alt={club.name}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover transition-opacity duration-300"
                 />
                 
@@ -217,4 +219,6 @@ export function ClubModal({
       </div>
     </div>
   );
-}
+};
+
+export const ClubModal = React.memo(ClubModalComponent);

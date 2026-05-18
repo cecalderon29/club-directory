@@ -9,7 +9,7 @@ interface ClubCardProps {
   onToggleFavorite: (e: React.MouseEvent) => void;
 }
 
-export function ClubCard({ club, isFavorite, onClick, onToggleFavorite }: ClubCardProps) {
+const ClubCardComponent = ({ club, isFavorite, onClick, onToggleFavorite }: ClubCardProps) => {
   return (
     <div 
       onClick={onClick}
@@ -41,4 +41,6 @@ export function ClubCard({ club, isFavorite, onClick, onToggleFavorite }: ClubCa
       </p>
     </div>
   );
-}
+};
+
+export const ClubCard = React.memo(ClubCardComponent);
