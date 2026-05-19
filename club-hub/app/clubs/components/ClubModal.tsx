@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { 
   X, 
   MapPin, 
   Clock, 
   Bell,
-  Facebook,
-  Instagram,
-  Twitter,
   Mail, 
   DollarSign, 
   CalendarDays,
@@ -27,6 +24,26 @@ interface ClubModalProps {
   onImageIndexChange: (index: number) => void;
 }
 
+const InstagramLogo = ({ size = 18 }: { size?: number }) => (
+  <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true">
+    <rect x="3.5" y="3.5" width="17" height="17" rx="5" stroke="currentColor" strokeWidth="2" />
+    <circle cx="12" cy="12" r="3.5" stroke="currentColor" strokeWidth="2" />
+    <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" />
+  </svg>
+);
+
+const FacebookLogo = ({ size = 18 }: { size?: number }) => (
+  <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-hidden="true">
+    <path d="M14.2 8.2h2.3V5.3h-2.7c-3 0-4.6 1.8-4.6 4.8v1.9H7v3h2.2v5.7h3.3V15h2.8l.4-3h-3.2v-1.5c0-1.1.3-2.3 1.7-2.3Z" />
+  </svg>
+);
+
+const TwitterLogo = ({ size = 18 }: { size?: number }) => (
+  <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-hidden="true">
+    <path d="M20.6 7.1a6.8 6.8 0 0 1-2 .6 3.4 3.4 0 0 0 1.5-1.9c-.7.4-1.5.8-2.3 1a3.4 3.4 0 0 0-5.8 3.1A9.7 9.7 0 0 1 5 6.6a3.4 3.4 0 0 0 1 4.6c-.6 0-1.1-.2-1.6-.4 0 1.7 1.2 3.1 2.8 3.4-.5.1-1 .2-1.6 0 .5 1.5 2 2.5 3.6 2.6A6.9 6.9 0 0 1 4 18.3a9.7 9.7 0 0 0 5.2 1.5c6.3 0 9.7-5.2 9.7-9.7v-.4c.7-.5 1.3-1.1 1.7-1.8Z" />
+  </svg>
+);
+
 const ClubModalComponent = ({ 
   club, 
   currentImageIndex, 
@@ -38,11 +55,6 @@ const ClubModalComponent = ({
   onImageIndexChange
 }: ClubModalProps) => {
   const isFavorite = favorites.includes(club.id);
-  const [currentImageSrc, setCurrentImageSrc] = useState(club.images[currentImageIndex] || '/images/club-placeholder.svg');
-
-  useEffect(() => {
-    setCurrentImageSrc(club.images[currentImageIndex] || '/images/club-placeholder.svg');
-  }, [club.images, currentImageIndex]);
 
   const toSocialUrl = (platform: 'instagram' | 'twitter' | 'facebook' | 'remind', value?: string) => {
     if (!value) return null;
@@ -108,11 +120,16 @@ const ClubModalComponent = ({
             {club.images && club.images.length > 0 ? (
               <>
                 <img 
-                  src={currentImageSrc}
+                  src={club.images[currentImageIndex] || '/images/club-placeholder.svg'}
                   alt={club.name}
                   loading="lazy"
                   decoding="async"
-                  onError={() => setCurrentImageSrc('/images/club-placeholder.svg')}
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    if (!target.src.includes('/images/club-placeholder.svg')) {
+                      target.src = '/images/club-placeholder.svg';
+                    }
+                  }}
                   className="w-full h-full object-cover transition-opacity duration-300"
                 />
                 
@@ -215,7 +232,7 @@ const ClubModalComponent = ({
                         className="p-3 rounded-xl transition-all bg-[#fdf2f8] text-[#db2777] hover:bg-[#fce7f3]"
                         title="Instagram"
                       >
-                        <Instagram size={18} />
+                        <InstagramLogo size={18} />
                       </a>
                     )}
                     {club.socials.twitter && (
@@ -226,7 +243,7 @@ const ClubModalComponent = ({
                         className="p-3 rounded-xl transition-all bg-[#e0f2fe] text-[#0284c7] hover:bg-[#bae6fd]"
                         title="Twitter"
                       >
-                        <Twitter size={18} />
+                        <TwitterLogo size={18} />
                       </a>
                     )}
                     {club.socials.facebook && (
@@ -237,7 +254,7 @@ const ClubModalComponent = ({
                         className="p-3 rounded-xl transition-all bg-[#dbeafe] text-[#1e3a8a] hover:bg-[#bfdbfe]"
                         title="Facebook"
                       >
-                        <Facebook size={18} />
+                        <FacebookLogo size={18} />
                       </a>
                     )}
                     {club.socials.remind && (
