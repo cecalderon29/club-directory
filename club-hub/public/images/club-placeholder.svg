@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">Club image placeholder</title>
+  <desc id="desc">Gradient background with Club Hub text.</desc>
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#fecaca" />
+      <stop offset="100%" stop-color="#fca5a5" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#g)" />
+  <circle cx="1040" cy="120" r="180" fill="#f87171" opacity="0.28" />
+  <circle cx="180" cy="600" r="220" fill="#ef4444" opacity="0.2" />
+  <text x="50%" y="48%" text-anchor="middle" fill="#991b1b" font-family="sans-serif" font-size="72" font-weight="700">
+    Club Hub
+  </text>
+  <text x="50%" y="58%" text-anchor="middle" fill="#7f1d1d" font-family="sans-serif" font-size="32" font-weight="600">
+    Image unavailable
+  </text>
+</svg>
