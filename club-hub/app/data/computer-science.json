@@ -15,12 +15,13 @@
     "socials": {
         "instagram": "@nchs_csclub",
         "twitter": "",
-    "remind": "@csclub27"
+        "facebook": "nchscsclub",
+        "remind": "@csclub27"
     },
     "events": [
         { "name": "Kickoff Meeting", "date": "Sept 10" }
     ],
     "images": [
-        "../images/comp-sci.jpg"
+        "/images/comp-sci.jpeg"
     ]
 }
