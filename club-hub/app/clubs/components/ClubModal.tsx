@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   X, 
   MapPin, 
   Clock, 
-  Camera,
-  Bird,
+  Bell,
+  Facebook,
+  Instagram,
+  Twitter,
   Mail, 
-  Link as LinkIcon, 
   DollarSign, 
   CalendarDays,
   ChevronLeft,
@@ -37,6 +38,28 @@ const ClubModalComponent = ({
   onImageIndexChange
 }: ClubModalProps) => {
   const isFavorite = favorites.includes(club.id);
+  const [currentImageSrc, setCurrentImageSrc] = useState(club.images[currentImageIndex] || '/images/club-placeholder.svg');
+
+  useEffect(() => {
+    setCurrentImageSrc(club.images[currentImageIndex] || '/images/club-placeholder.svg');
+  }, [club.images, currentImageIndex]);
+
+  const toSocialUrl = (platform: 'instagram' | 'twitter' | 'facebook' | 'remind', value?: string) => {
+    if (!value) return null;
+    const trimmed = value.trim();
+    if (!trimmed) return null;
+
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+      return trimmed;
+    }
+
+    const normalized = trimmed.replace(/^@/, '');
+
+    if (platform === 'instagram') return `https://www.instagram.com/${normalized}`;
+    if (platform === 'twitter') return `https://x.com/${normalized}`;
+    if (platform === 'facebook') return `https://www.facebook.com/${normalized}`;
+    return `https://www.remind.com/join/${normalized}`;
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
@@ -85,10 +108,11 @@ const ClubModalComponent = ({
             {club.images && club.images.length > 0 ? (
               <>
                 <img 
-                  src={club.images[currentImageIndex]} 
+                  src={currentImageSrc}
                   alt={club.name}
                   loading="lazy"
                   decoding="async"
+                  onError={() => setCurrentImageSrc('/images/club-placeholder.svg')}
                   className="w-full h-full object-cover transition-opacity duration-300"
                 />
                 
@@ -184,18 +208,47 @@ const ClubModalComponent = ({
                   <div className="text-[10px] font-black uppercase text-[var(--text-muted)] tracking-wider mb-3">Connect With Us</div>
                   <div className="flex flex-wrap gap-3">
                     {club.socials.instagram && (
-                      <a href="#" className="p-3 rounded-xl transition-all bg-[var(--surface-soft)] text-[var(--accent)] hover:bg-[var(--accent-soft)]" title="Instagram">
-                        <Camera size={18} />
+                      <a
+                        href={toSocialUrl('instagram', club.socials.instagram) || '#'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-3 rounded-xl transition-all bg-[#fdf2f8] text-[#db2777] hover:bg-[#fce7f3]"
+                        title="Instagram"
+                      >
+                        <Instagram size={18} />
                       </a>
                     )}
                     {club.socials.twitter && (
-                      <a href="#" className="p-3 rounded-xl transition-all bg-[var(--surface-soft)] text-[var(--text-primary)] hover:bg-[var(--hover-surface)]" title="Twitter">
-                        <Bird size={18} />
+                      <a
+                        href={toSocialUrl('twitter', club.socials.twitter) || '#'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-3 rounded-xl transition-all bg-[#e0f2fe] text-[#0284c7] hover:bg-[#bae6fd]"
+                        title="Twitter"
+                      >
+                        <Twitter size={18} />
+                      </a>
+                    )}
+                    {club.socials.facebook && (
+                      <a
+                        href={toSocialUrl('facebook', club.socials.facebook) || '#'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-3 rounded-xl transition-all bg-[#dbeafe] text-[#1e3a8a] hover:bg-[#bfdbfe]"
+                        title="Facebook"
+                      >
+                        <Facebook size={18} />
                       </a>
                     )}
                     {club.socials.remind && (
-                      <a href="#" className="flex items-center gap-2 px-4 py-3 rounded-xl font-bold text-xs transition-all bg-[var(--surface-soft)] text-[var(--text-primary)] border border-[var(--border)] hover:bg-[var(--hover-surface)]" title="Remind Code">
-                        <LinkIcon size={16} /> {club.socials.remind}
+                      <a
+                        href={toSocialUrl('remind', club.socials.remind) || '#'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 px-4 py-3 rounded-xl font-bold text-xs transition-all bg-[#dbeafe] text-[#1d4ed8] border border-[#93c5fd] hover:bg-[#bfdbfe]"
+                        title="Remind"
+                      >
+                        <Bell size={16} /> {club.socials.remind}
                       </a>
                     )}
                   </div>

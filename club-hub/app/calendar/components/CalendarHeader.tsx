@@ -21,11 +21,14 @@ export function CalendarHeader({
           <CalendarIcon size={32} className="text-[var(--accent)]" />
           Club Calendar
         </h1>
-        <p className="text-[var(--text-secondary)] font-bold text-sm mt-1">Check out school events and activities</p>
+        <p className="text-[var(--text-secondary)] font-bold text-sm mt-1">
+          {monthName} {year} · {showFavoritesOnly ? 'Showing favorites' : 'Showing all clubs'}
+        </p>
       </div>
 
       <button 
         onClick={onToggleFavorites}
+        aria-pressed={showFavoritesOnly}
         className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-black text-sm transition-all shadow-md border-2 ${
           showFavoritesOnly 
             ? 'bg-[var(--accent)] text-[var(--text-inverse)] border-[var(--accent-strong)] hover:bg-[var(--accent-strong)]' 
@@ -33,7 +36,7 @@ export function CalendarHeader({
         }`}
       >
         <Star size={16} className={showFavoritesOnly ? 'fill-[var(--text-inverse)]' : ''} />
-        {showFavoritesOnly ? 'Showing Favorites' : 'Show All Clubs'}
+        {showFavoritesOnly ? 'Show All Clubs' : 'Show Favorites'}
       </button>
     </div>
   );
