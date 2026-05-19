@@ -43,10 +43,6 @@ export default function ClientShell({ children }: { children: React.ReactNode })
     };
   }, []);
 
-  useEffect(() => {
-    setIsSidebarForcedHidden(false);
-  }, [pathname]);
-
   return (
     <div className="flex h-screen font-sans transition-colors duration-300 overflow-hidden bg-(--background) text-(--foreground)">
       {!isSidebarForcedHidden && (
