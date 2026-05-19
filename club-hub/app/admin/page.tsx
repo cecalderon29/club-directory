@@ -8,7 +8,7 @@ type SocialPlatform = "instagram" | "twitter" | "facebook" | "remind";
 
 type EditableClubFields = Pick<
   Club,
-  "name" | "category" | "description" | "day" | "time" | "location" | "dues" | "socials" | "tags"
+  "name" | "description" | "day" | "time" | "location" | "dues" | "socials" | "tags"
 >;
 
 const SOCIAL_LABELS: Record<SocialPlatform, string> = {
@@ -39,36 +39,17 @@ export default function AdminPage() {
   const [clubs, setClubs] = useState<Club[]>(() => getClubs());
   const [editingClubId, setEditingClubId] = useState<number | null>(null);
   const [clubDraft, setClubDraft] = useState<EditableClubFields | null>(null);
-  const [customTagInput, setCustomTagInput] = useState("");
-
-  const sponsors = useMemo(
-    () =>
-      Array.from(
-        new Map(clubs.map((club) => [club.sponsor.email, { name: club.sponsor.name, email: club.sponsor.email }])).values()
-      ),
-    [clubs]
-  );
-
-  const [selectedSponsorEmail, setSelectedSponsorEmail] = useState(() => getClubs()[0]?.sponsor.email ?? "");
-
-  const managedClubs = useMemo(
-    () => clubs.filter((club) => club.sponsor.email === selectedSponsorEmail),
-    [clubs, selectedSponsorEmail]
-  );
+  const managedClubs = clubs;
 
   const availableTags = useMemo(() => {
     const existingTags = clubs.flatMap((club) => club.tags ?? []);
     return Array.from(new Set([...DEFAULT_TAG_OPTIONS, ...existingTags])).sort((a, b) => a.localeCompare(b));
   }, [clubs]);
 
-  const selectedSponsorName = sponsors.find((sponsor) => sponsor.email === selectedSponsorEmail)?.name ?? "Sponsor";
-
   const startEdit = (club: Club) => {
     setEditingClubId(club.id);
-    setCustomTagInput("");
     setClubDraft({
       name: club.name,
-      category: club.category,
       description: club.description,
       day: club.day,
       time: club.time,
@@ -87,7 +68,6 @@ export default function AdminPage() {
   const cancelEdit = () => {
     setEditingClubId(null);
     setClubDraft(null);
-    setCustomTagInput("");
   };
 
   const updateDraftField = <K extends keyof EditableClubFields>(field: K, value: EditableClubFields[K]) => {
@@ -130,20 +110,6 @@ export default function AdminPage() {
     });
   };
 
-  const addCustomTag = () => {
-    const tag = customTagInput.trim();
-    if (!tag) return;
-
-    setClubDraft((prev) => {
-      if (!prev) return prev;
-      const prevTags = prev.tags ?? [];
-      if (prevTags.includes(tag)) return prev;
-      return { ...prev, tags: [...prevTags, tag] };
-    });
-
-    setCustomTagInput("");
-  };
-
   const saveEdit = (clubId: number) => {
     if (!clubDraft) return;
 
@@ -178,31 +144,13 @@ export default function AdminPage() {
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div>
               <h1 className="text-3xl md:text-4xl font-black tracking-tight">Sponsor Admin</h1>
-              <p className="text-(--text-secondary) mt-2">Manage detailed club information for the selected sponsor.</p>
-            </div>
-
-            <div className="w-full md:w-80">
-              <label htmlFor="sponsor" className="block text-xs font-black uppercase tracking-wider mb-2 text-(--text-muted)">
-                Sponsor
-              </label>
-              <select
-                id="sponsor"
-                value={selectedSponsorEmail}
-                onChange={(event) => setSelectedSponsorEmail(event.target.value)}
-                className="w-full rounded-xl border border-(--border) bg-(--surface-strong) p-3 text-sm font-semibold outline-none focus:ring-2 focus:ring-(--accent)"
-              >
-                {sponsors.map((sponsor) => (
-                  <option key={sponsor.email} value={sponsor.email}>
-                    {sponsor.name} ({sponsor.email})
-                  </option>
-                ))}
-              </select>
+              <p className="text-(--text-secondary) mt-2">Manage detailed club information for all clubs.</p>
             </div>
           </div>
         </div>
 
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-black uppercase tracking-tight">{selectedSponsorName}&apos;s Clubs</h2>
+          <h2 className="text-lg font-black uppercase tracking-tight">All Clubs</h2>
           <span className="px-3 py-1 rounded-full bg-(--accent-soft) text-(--accent) text-xs font-black uppercase">
             {managedClubs.length} Club{managedClubs.length === 1 ? "" : "s"}
           </span>
@@ -222,31 +170,18 @@ export default function AdminPage() {
                   <div className="mb-4 flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       {isEditing ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                          <div>
-                            <label className="block mb-1 text-[10px] font-black uppercase tracking-wider text-(--text-muted)">
-                              Category
-                            </label>
-                            <input
-                              value={clubDraft.category}
-                              onChange={(event) => updateDraftField("category", event.target.value)}
-                              className="w-full rounded-lg border border-(--border) bg-(--surface-strong) px-3 py-2 text-sm font-black uppercase tracking-wider text-(--accent) outline-none focus:ring-2 focus:ring-(--accent)"
-                            />
-                          </div>
-                          <div>
-                            <label className="block mb-1 text-[10px] font-black uppercase tracking-wider text-(--text-muted)">
-                              Club Name
-                            </label>
-                            <input
-                              value={clubDraft.name}
-                              onChange={(event) => updateDraftField("name", event.target.value)}
-                              className="w-full rounded-lg border border-(--border) bg-(--surface-strong) px-3 py-2 text-base font-black leading-tight outline-none focus:ring-2 focus:ring-(--accent)"
-                            />
-                          </div>
+                        <div>
+                          <label className="block mb-1 text-[10px] font-black uppercase tracking-wider text-(--text-muted)">
+                            Club Name
+                          </label>
+                          <input
+                            value={clubDraft.name}
+                            onChange={(event) => updateDraftField("name", event.target.value)}
+                            className="w-full rounded-lg border border-(--border) bg-(--surface-strong) px-3 py-2 text-base font-black leading-tight outline-none focus:ring-2 focus:ring-(--accent)"
+                          />
                         </div>
                       ) : (
                         <>
-                          <div className="text-[10px] font-black uppercase tracking-wider text-(--accent) mb-1">{club.category}</div>
                           <h3 className="text-xl font-black leading-tight">{club.name}</h3>
                         </>
                       )}
@@ -364,22 +299,6 @@ export default function AdminPage() {
                               );
                             })}
                           </div>
-
-                          <div className="flex gap-2">
-                            <input
-                              value={customTagInput}
-                              onChange={(event) => setCustomTagInput(event.target.value)}
-                              placeholder="Add custom tag"
-                              className="flex-1 rounded-lg border border-(--border) bg-(--surface) px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-(--accent)"
-                            />
-                            <button
-                              type="button"
-                              onClick={addCustomTag}
-                              className="rounded-lg border border-(--border) px-3 py-2 text-xs font-black uppercase hover:text-(--text-primary)"
-                            >
-                              Add
-                            </button>
-                          </div>
                         </section>
                       </div>
 
@@ -466,7 +385,7 @@ export default function AdminPage() {
           </div>
         ) : (
           <div className="rounded-2xl border border-(--border) bg-(--surface) p-8 text-center text-(--text-secondary)">
-            No clubs are assigned to this sponsor.
+            No clubs are available.
           </div>
         )}
       </div>
