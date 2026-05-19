@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Mail, MapPin, Pencil, Save, Users, X } from "lucide-react";
 import { Club, getClubs } from "../data/clubs";
 
@@ -21,17 +21,7 @@ export default function AdminPage() {
     [clubs]
   );
 
-  const [selectedSponsorEmail, setSelectedSponsorEmail] = useState("");
-
-  useEffect(() => {
-    if (!sponsors.length) {
-      setSelectedSponsorEmail("");
-      return;
-    }
-    if (!selectedSponsorEmail || !sponsors.some((sponsor) => sponsor.email === selectedSponsorEmail)) {
-      setSelectedSponsorEmail(sponsors[0].email);
-    }
-  }, [selectedSponsorEmail, sponsors]);
+  const [selectedSponsorEmail, setSelectedSponsorEmail] = useState(() => getClubs()[0]?.sponsor.email ?? "");
 
   const managedClubs = useMemo(
     () => clubs.filter((club) => club.sponsor.email === selectedSponsorEmail),
@@ -204,7 +194,7 @@ export default function AdminPage() {
                       {isEditing ? (
                         <div className="grid grid-cols-2 gap-2 w-full">
                           <input
-                            value={club.day}
+                            value={clubDraft.day}
                             onChange={(event) => updateDraftField("day", event.target.value)}
                             className="w-full rounded-lg border border-(--border) bg-(--surface-strong) px-3 py-2 outline-none focus:ring-2 focus:ring-(--accent)"
                           />
