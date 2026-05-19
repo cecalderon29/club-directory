@@ -10,6 +10,7 @@ export interface Club {
   id: number;
   name: string;
   category: string;
+  tags?: string[];
   description: string;
   time: string;
   day: string;
