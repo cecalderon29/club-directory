@@ -22,6 +22,12 @@ export default function ClientShell({ children }: { children: React.ReactNode })
     setIsSidebarOpen(false);
   }, [router]);
 
+  useEffect(() => {
+    const handleModalOpen = () => setIsSidebarOpen(false);
+    window.addEventListener('club-modal-opened', handleModalOpen);
+    return () => window.removeEventListener('club-modal-opened', handleModalOpen);
+  }, []);
+
   return (
     <div className="flex h-screen font-sans transition-colors duration-300 overflow-hidden bg-(--background) text-(--foreground)">
       <Sidebar

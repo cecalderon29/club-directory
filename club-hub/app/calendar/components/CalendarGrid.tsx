@@ -40,11 +40,16 @@ export function CalendarGrid({ days, blanks, getEventsForDay, today, year, month
           <div 
             key={day} 
             className={`bg-[var(--surface-strong)] min-h-[120px] sm:min-h-[140px] p-2 transition-colors ${
-              isCurrentDay ? 'bg-[var(--accent-soft)]' : 'hover:bg-[var(--hover-surface)]'
+              isCurrentDay
+                ? 'bg-[var(--accent-soft)] ring-2 ring-[var(--accent)] ring-inset shadow-[0_0_0_2px_var(--accent-soft)]'
+                : 'hover:bg-[var(--hover-surface)]'
             }`}
           >
-            <div className={`text-sm font-black mb-1 ${isCurrentDay ? 'text-[var(--accent)]' : 'text-[var(--text-secondary)]'}`}>
+            <div className={`text-sm font-black mb-1 ${isCurrentDay ? 'text-[var(--accent-strong)]' : 'text-[var(--text-secondary)]'}`}>
               {day}
+              {isCurrentDay && (
+                <span className="ml-1 text-[10px] uppercase tracking-wider">Today</span>
+              )}
             </div>
             <div className="space-y-1">
               {dayEvents.slice(0, 3).map((evt, i) => (

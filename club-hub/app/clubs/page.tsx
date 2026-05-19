@@ -36,6 +36,7 @@ const ClubsPage = () => {
   });
 
   const handleOpenModal = (club: Club) => {
+    window.dispatchEvent(new Event('club-modal-opened'));
     setSelectedClub(club);
     setCurrentImageIndex(0);
   };

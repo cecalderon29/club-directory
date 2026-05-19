@@ -3,10 +3,11 @@ import {
   X, 
   MapPin, 
   Clock, 
-  Camera,
-  Bird,
+  Instagram,
+  Twitter,
+  Facebook,
+  BellRing,
   Mail, 
-  Link as LinkIcon, 
   DollarSign, 
   CalendarDays,
   ChevronLeft,
@@ -37,6 +38,11 @@ const ClubModalComponent = ({
   onImageIndexChange
 }: ClubModalProps) => {
   const isFavorite = favorites.includes(club.id);
+  const normalizeHandle = (value: string) => value.replace(/^@/, '').trim();
+  const instagramUrl = club.socials?.instagram ? `https://instagram.com/${normalizeHandle(club.socials.instagram)}` : null;
+  const twitterUrl = club.socials?.twitter ? `https://twitter.com/${normalizeHandle(club.socials.twitter)}` : null;
+  const facebookUrl = club.socials?.facebook ? `https://facebook.com/${normalizeHandle(club.socials.facebook)}` : null;
+  const remindUrl = club.socials?.remind ? `https://www.remind.com/join/${normalizeHandle(club.socials.remind)}` : null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
@@ -183,19 +189,52 @@ const ClubModalComponent = ({
                 <div className="p-6 rounded-3xl border bg-[var(--surface)] border-[var(--border)] shadow-sm">
                   <div className="text-[10px] font-black uppercase text-[var(--text-muted)] tracking-wider mb-3">Connect With Us</div>
                   <div className="flex flex-wrap gap-3">
-                    {club.socials.instagram && (
-                      <a href="#" className="p-3 rounded-xl transition-all bg-[var(--surface-soft)] text-[var(--accent)] hover:bg-[var(--accent-soft)]" title="Instagram">
-                        <Camera size={18} />
+                    {instagramUrl && (
+                      <a
+                        href={instagramUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-3 rounded-xl transition-all bg-pink-100 text-pink-600 hover:bg-pink-200"
+                        title="Instagram"
+                        aria-label="Open Instagram"
+                      >
+                        <Instagram size={18} />
                       </a>
                     )}
-                    {club.socials.twitter && (
-                      <a href="#" className="p-3 rounded-xl transition-all bg-[var(--surface-soft)] text-[var(--text-primary)] hover:bg-[var(--hover-surface)]" title="Twitter">
-                        <Bird size={18} />
+                    {twitterUrl && (
+                      <a
+                        href={twitterUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-3 rounded-xl transition-all bg-sky-100 text-sky-600 hover:bg-sky-200"
+                        title="Twitter"
+                        aria-label="Open Twitter"
+                      >
+                        <Twitter size={18} />
                       </a>
                     )}
-                    {club.socials.remind && (
-                      <a href="#" className="flex items-center gap-2 px-4 py-3 rounded-xl font-bold text-xs transition-all bg-[var(--surface-soft)] text-[var(--text-primary)] border border-[var(--border)] hover:bg-[var(--hover-surface)]" title="Remind Code">
-                        <LinkIcon size={16} /> {club.socials.remind}
+                    {facebookUrl && (
+                      <a
+                        href={facebookUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-3 rounded-xl transition-all bg-blue-100 text-blue-800 hover:bg-blue-200"
+                        title="Facebook"
+                        aria-label="Open Facebook"
+                      >
+                        <Facebook size={18} />
+                      </a>
+                    )}
+                    {remindUrl && (
+                      <a
+                        href={remindUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 px-4 py-3 rounded-xl font-bold text-xs transition-all bg-blue-100 text-blue-700 hover:bg-blue-200"
+                        title="Remind"
+                        aria-label="Open Remind"
+                      >
+                        <BellRing size={16} /> {club.socials.remind}
                       </a>
                     )}
                   </div>
