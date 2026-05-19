@@ -2,7 +2,10 @@
 
 import { useMemo, useState } from "react";
 import { Mail, MapPin, Pencil, Save, Tag, Users, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { Club, getClubs } from "../data/clubs";
+import { useAccount } from "../contexts/AccountContext";
 
 type SocialPlatform = "instagram" | "twitter" | "facebook" | "remind";
 
@@ -36,10 +39,24 @@ const DEFAULT_TAG_OPTIONS = [
 const SOCIAL_PLATFORMS: SocialPlatform[] = ["instagram", "twitter", "facebook", "remind"];
 
 export default function AdminPage() {
+  const router = useRouter();
+  const { currentAccount } = useAccount();
   const [clubs, setClubs] = useState<Club[]>(() => getClubs());
   const [editingClubId, setEditingClubId] = useState<number | null>(null);
   const [clubDraft, setClubDraft] = useState<EditableClubFields | null>(null);
-  const managedClubs = clubs;
+  const managedClubs = useMemo(() => {
+    if (currentAccount.role !== "teacher" || !currentAccount.sponsorEmail) {
+      return [];
+    }
+
+    return clubs.filter((club) => club.sponsor.email === currentAccount.sponsorEmail);
+  }, [clubs, currentAccount.role, currentAccount.sponsorEmail]);
+
+  useEffect(() => {
+    if (currentAccount.role !== "teacher") {
+      router.replace("/dashboard");
+    }
+  }, [currentAccount.role, router]);
 
   const availableTags = useMemo(() => {
     const existingTags = clubs.flatMap((club) => club.tags ?? []);
@@ -137,14 +154,18 @@ export default function AdminPage() {
     cancelEdit();
   };
 
+  if (currentAccount.role !== "teacher") {
+    return null;
+  }
+
   return (
     <div className="h-full overflow-y-auto bg-(--background)">
       <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
         <div className="rounded-3xl border border-(--border) bg-(--surface) p-6 shadow-(--shadow-card)">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div>
-              <h1 className="text-3xl md:text-4xl font-black tracking-tight">Sponsor Admin</h1>
-              <p className="text-(--text-secondary) mt-2">Manage detailed club information for all clubs.</p>
+               <h1 className="text-3xl md:text-4xl font-black tracking-tight">Sponsor Admin</h1>
+               <p className="text-(--text-secondary) mt-2">Manage detailed club information for your sponsored clubs.</p>
             </div>
           </div>
         </div>
