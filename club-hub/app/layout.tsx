@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import ClientShell from "./components/ClientShell";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { AccountProvider } from "./contexts/AccountContext";
 
 export const metadata: Metadata = {
   title: "ClubHub",
@@ -17,7 +18,9 @@ export default function RootLayout({
     <html lang="en" className="h-full antialiased">
       <body className="min-h-full flex flex-col">
         <ThemeProvider>
-          <ClientShell>{children}</ClientShell>
+          <AccountProvider>
+            <ClientShell>{children}</ClientShell>
+          </AccountProvider>
         </ThemeProvider>
       </body>
     </html>
