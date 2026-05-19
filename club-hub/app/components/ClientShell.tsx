@@ -8,6 +8,7 @@ import { useTheme } from "../contexts/ThemeContext";
 
 export default function ClientShell({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarForcedHidden, setIsSidebarForcedHidden] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isSignedIn, setIsSignedIn] = useState(false);
   const { isDarkMode, setIsDarkMode } = useTheme();
@@ -15,7 +16,13 @@ export default function ClientShell({ children }: { children: React.ReactNode })
   const router = useRouter();
 
   const activeTab =
-    pathname === "/clubs" ? "clubs" : pathname === "/calendar" ? "calendar" : "home";
+    pathname === "/clubs"
+      ? "clubs"
+      : pathname === "/calendar"
+      ? "calendar"
+      : pathname === "/admin"
+      ? "admin"
+      : "home";
 
   const handleNavigate = useCallback((path: string) => {
     router.push(path);
@@ -23,27 +30,39 @@ export default function ClientShell({ children }: { children: React.ReactNode })
   }, [router]);
 
   useEffect(() => {
-    const closeSidebarForModal = () => setIsSidebarOpen(false);
-    window.addEventListener('clubhub:modal-opened', closeSidebarForModal);
+    const handleModalOpened = () => {
+      setIsSidebarOpen(false);
+      setIsSidebarForcedHidden(true);
+    };
+    const handleModalClosed = () => setIsSidebarForcedHidden(false);
+    window.addEventListener('clubhub:modal-opened', handleModalOpened);
+    window.addEventListener('clubhub:modal-closed', handleModalClosed);
     return () => {
-      window.removeEventListener('clubhub:modal-opened', closeSidebarForModal);
+      window.removeEventListener('clubhub:modal-opened', handleModalOpened);
+      window.removeEventListener('clubhub:modal-closed', handleModalClosed);
     };
   }, []);
 
+  useEffect(() => {
+    setIsSidebarForcedHidden(false);
+  }, [pathname]);
+
   return (
     <div className="flex h-screen font-sans transition-colors duration-300 overflow-hidden bg-(--background) text-(--foreground)">
-      <Sidebar
-        isDarkMode={isDarkMode}
-        setIsDarkMode={setIsDarkMode}
-        activeTab={activeTab}
-        onNavigate={handleNavigate}
-        isOpen={isSidebarOpen}
-        setIsOpen={setIsSidebarOpen}
-        isCollapsed={isCollapsed}
-        setIsCollapsed={setIsCollapsed}
-        isSignedIn={isSignedIn}
-        setIsSignedIn={setIsSignedIn}
-      />
+      {!isSidebarForcedHidden && (
+        <Sidebar
+          isDarkMode={isDarkMode}
+          setIsDarkMode={setIsDarkMode}
+          activeTab={activeTab}
+          onNavigate={handleNavigate}
+          isOpen={isSidebarOpen}
+          setIsOpen={setIsSidebarOpen}
+          isCollapsed={isCollapsed}
+          setIsCollapsed={setIsCollapsed}
+          isSignedIn={isSignedIn}
+          setIsSignedIn={setIsSignedIn}
+        />
+      )}
 
       <div className="flex-1 flex flex-col min-w-0 z-10 relative overflow-hidden">
         <TopBar setIsOpen={setIsSidebarOpen} isSignedIn={isSignedIn} />

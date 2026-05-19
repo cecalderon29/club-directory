@@ -41,6 +41,11 @@ const ClubsPage = () => {
     setCurrentImageIndex(0);
   };
 
+  const handleCloseModal = () => {
+    window.dispatchEvent(new CustomEvent('clubhub:modal-closed'));
+    setSelectedClub(null);
+  };
+
   const toggleFavorite = (e: React.MouseEvent, id: number) => {
     if (e) e.stopPropagation(); 
     setFavorites(prev => 
@@ -114,7 +119,7 @@ const ClubsPage = () => {
           club={selectedClub}
           currentImageIndex={currentImageIndex}
           favorites={favorites}
-          onClose={() => setSelectedClub(null)}
+          onClose={handleCloseModal}
           onToggleFavorite={(e) => toggleFavorite(e, selectedClub.id)}
           onNextImage={nextImage}
           onPrevImage={prevImage}
