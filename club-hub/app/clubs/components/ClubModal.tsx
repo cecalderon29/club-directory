@@ -3,9 +3,6 @@ import {
   X, 
   MapPin, 
   Clock, 
-  Instagram,
-  Twitter,
-  Facebook,
   BellRing,
   Mail, 
   DollarSign, 
@@ -26,6 +23,24 @@ interface ClubModalProps {
   onPrevImage: (e: React.MouseEvent) => void;
   onImageIndexChange: (index: number) => void;
 }
+
+const InstagramLogo = ({ size = 18 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9a5.5 5.5 0 0 1-5.5 5.5h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2Zm0 1.8A3.7 3.7 0 0 0 3.8 7.5v9a3.7 3.7 0 0 0 3.7 3.7h9a3.7 3.7 0 0 0 3.7-3.7v-9a3.7 3.7 0 0 0-3.7-3.7h-9Zm9.9 1.4a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 1.8a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 0 0 0-6.4Z" />
+  </svg>
+);
+
+const FacebookLogo = ({ size = 18 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M13.5 22v-8h2.7l.4-3.1h-3.1V9c0-.9.2-1.5 1.5-1.5h1.7V4.8c-.3 0-1.3-.1-2.5-.1-2.5 0-4.1 1.5-4.1 4.4v1.8H7.5V14H10v8h3.5Z" />
+  </svg>
+);
+
+const TwitterLogo = ({ size = 18 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M18.9 2H22l-6.7 7.7L23 22h-6l-4.7-6-5.3 6H4l7.1-8.1L1 2h6.2l4.2 5.4L18.9 2Zm-1 18h1.7L6.4 3.9H4.6L17.9 20Z" />
+  </svg>
+);
 
 const ClubModalComponent = ({ 
   club, 
@@ -198,7 +213,7 @@ const ClubModalComponent = ({
                         title="Instagram"
                         aria-label="Open Instagram"
                       >
-                        <Instagram size={18} />
+                        <InstagramLogo size={18} />
                       </a>
                     )}
                     {twitterUrl && (
@@ -210,7 +225,7 @@ const ClubModalComponent = ({
                         title="Twitter"
                         aria-label="Open Twitter"
                       >
-                        <Twitter size={18} />
+                        <TwitterLogo size={18} />
                       </a>
                     )}
                     {facebookUrl && (
@@ -222,7 +237,7 @@ const ClubModalComponent = ({
                         title="Facebook"
                         aria-label="Open Facebook"
                       >
-                        <Facebook size={18} />
+                        <FacebookLogo size={18} />
                       </a>
                     )}
                     {remindUrl && (
