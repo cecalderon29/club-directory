@@ -10,30 +10,20 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [isDarkMode, setIsDarkModeState] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const [isDarkMode, setIsDarkModeState] = useState(() => {
+    if (typeof window === 'undefined') return false;
 
-  useEffect(() => {
-    // Load theme from localStorage on mount
     const savedTheme = window.localStorage.getItem('clubhub-theme');
-    if (savedTheme === 'dark') {
-      setIsDarkModeState(true);
-    } else if (savedTheme === 'light') {
-      setIsDarkModeState(false);
-    } else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setIsDarkModeState(prefersDark);
-    }
-    setMounted(true);
-  }, []);
+    if (savedTheme === 'dark') return true;
+    if (savedTheme === 'light') return false;
 
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
   useEffect(() => {
-    if (!mounted) return;
-    
     document.documentElement.classList.toggle('dark', isDarkMode);
     document.documentElement.style.colorScheme = isDarkMode ? 'dark' : 'light';
     window.localStorage.setItem('clubhub-theme', isDarkMode ? 'dark' : 'light');
-  }, [isDarkMode, mounted]);
+  }, [isDarkMode]);
 
   return (
     <ThemeContext.Provider value={{ isDarkMode, setIsDarkMode: setIsDarkModeState }}>
