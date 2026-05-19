@@ -8,8 +8,7 @@ import {
   LogIn,
   LogOut,
   ChevronLeft,
-  ChevronRight,
-  Shield
+  ChevronRight
 } from 'lucide-react';
 import NavItem from './NavItem';
 
@@ -70,7 +69,6 @@ const SidebarComponent: React.FC<SidebarProps> = ({ isDarkMode, setIsDarkMode, a
           <NavItem id="home" label="Home" icon={<Home size={20} />} href="/dashboard" activeId={activeTab} onNavigate={onNavigate} isCollapsed={isCollapsed} />
           <NavItem id="clubs" label="Clubs" icon={<Users size={20} />} href="/clubs" activeId={activeTab} onNavigate={onNavigate} isCollapsed={isCollapsed} />
           <NavItem id="calendar" label="Calendar" icon={<CalendarIcon size={20} />} href="/calendar" activeId={activeTab} onNavigate={onNavigate} isCollapsed={isCollapsed} />
-          <NavItem id="admin" label="Admin" icon={<Shield size={20} />} href="/admin" activeId={activeTab} onNavigate={onNavigate} isCollapsed={isCollapsed} />
         </nav>
 
         <div className={`p-2 mt-auto border-t border-(--border) space-y-2 ${isCollapsed ? 'items-center' : ''}`}>
