@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getClubs, getCategories, Club } from '../data/clubs';
 import { ClubCard } from './components/ClubCard';
 import { ClubModal } from './components/ClubModal';
@@ -41,6 +41,11 @@ const ClubsPage = () => {
     setCurrentImageIndex(0);
   };
 
+  const handleCloseModal = () => {
+    window.dispatchEvent(new CustomEvent('clubhub:modal-closed'));
+    setSelectedClub(null);
+  };
+
   const toggleFavorite = (e: React.MouseEvent, id: number) => {
     if (e) e.stopPropagation(); 
     setFavorites(prev => 
@@ -59,6 +64,12 @@ const ClubsPage = () => {
     if (!selectedClub) return;
     setCurrentImageIndex((prev) => (prev - 1 + selectedClub.images.length) % selectedClub.images.length);
   };
+
+  useEffect(() => {
+    return () => {
+      window.dispatchEvent(new CustomEvent('clubhub:modal-closed'));
+    };
+  }, []);
 
   return (
     <div className="h-full min-h-full flex flex-col relative overflow-hidden bg-[radial-gradient(circle_at_top_right,rgb(239,68,68),transparent_30%),linear-gradient(160deg,rgb(255,200,200),rgb(255,180,180))]">
@@ -114,7 +125,7 @@ const ClubsPage = () => {
           club={selectedClub}
           currentImageIndex={currentImageIndex}
           favorites={favorites}
-          onClose={() => setSelectedClub(null)}
+          onClose={handleCloseModal}
           onToggleFavorite={(e) => toggleFavorite(e, selectedClub.id)}
           onNextImage={nextImage}
           onPrevImage={prevImage}
