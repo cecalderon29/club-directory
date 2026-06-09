@@ -3,14 +3,14 @@ import {
   Home,
   Users,
   Calendar as CalendarIcon,
+  Shield,
   Sun,
   Moon,
-  LogIn,
-  LogOut,
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
 import NavItem from './NavItem';
+import { DemoAccount } from '../contexts/AccountContext';
 
 interface SidebarProps {
   isDarkMode: boolean;
@@ -21,14 +21,27 @@ interface SidebarProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isCollapsed: boolean;
   setIsCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
-  isSignedIn: boolean;
-  setIsSignedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  accounts: DemoAccount[];
+  currentAccount: DemoAccount;
+  setCurrentAccountById: (id: string) => void;
 }
 
 /**
  * Sidebar Component
  */
-const SidebarComponent: React.FC<SidebarProps> = ({ isDarkMode, setIsDarkMode, activeTab, onNavigate, isOpen, setIsOpen, isCollapsed, setIsCollapsed, isSignedIn, setIsSignedIn }) => {
+const SidebarComponent: React.FC<SidebarProps> = ({
+  isDarkMode,
+  setIsDarkMode,
+  activeTab,
+  onNavigate,
+  isOpen,
+  setIsOpen,
+  isCollapsed,
+  setIsCollapsed,
+  accounts,
+  currentAccount,
+  setCurrentAccountById,
+}) => {
   return (
     <>
       {isOpen && (
@@ -69,6 +82,9 @@ const SidebarComponent: React.FC<SidebarProps> = ({ isDarkMode, setIsDarkMode, a
           <NavItem id="home" label="Home" icon={<Home size={20} />} href="/dashboard" activeId={activeTab} onNavigate={onNavigate} isCollapsed={isCollapsed} />
           <NavItem id="clubs" label="Clubs" icon={<Users size={20} />} href="/clubs" activeId={activeTab} onNavigate={onNavigate} isCollapsed={isCollapsed} />
           <NavItem id="calendar" label="Calendar" icon={<CalendarIcon size={20} />} href="/calendar" activeId={activeTab} onNavigate={onNavigate} isCollapsed={isCollapsed} />
+          {currentAccount.role === "teacher" && (
+            <NavItem id="admin" label="Admin" icon={<Shield size={20} />} href="/admin" activeId={activeTab} onNavigate={onNavigate} isCollapsed={isCollapsed} />
+          )}
         </nav>
 
         <div className={`p-2 mt-auto border-t border-(--border) space-y-2 ${isCollapsed ? 'items-center' : ''}`}>
@@ -91,18 +107,24 @@ const SidebarComponent: React.FC<SidebarProps> = ({ isDarkMode, setIsDarkMode, a
             </button>
           </div>
 
-          <div className="pt-1">
-            {!isSignedIn ? (
-              <button onClick={() => setIsSignedIn(true)} className={`flex items-center gap-2 w-full p-2.5 rounded-xl font-black italic uppercase text-[10px] transition-all bg-(--accent) text-(--text-inverse) hover:bg-(--accent-strong) shadow-(--shadow-accent) group ${isCollapsed ? 'justify-center' : ''}`}>
-                <LogIn size={18} className="group-hover:translate-x-1 transition-transform shrink-0" />
-                {!isCollapsed && 'Sign In'}
-              </button>
-            ) : (
-              <button onClick={() => setIsSignedIn(false)} className={`flex items-center gap-2 w-full p-2.5 rounded-xl font-black italic uppercase text-[10px] text-(--text-muted) hover:text-(--accent) transition-all ${isCollapsed ? 'justify-center' : ''}`}>
-                <LogOut size={18} className="shrink-0" />
-                {!isCollapsed && 'Sign Out'}
-              </button>
-            )}
+          <div className="pt-1 space-y-1">
+            {accounts.map((account) => {
+              const selected = account.id === currentAccount.id;
+              return (
+                <button
+                  key={account.id}
+                  onClick={() => setCurrentAccountById(account.id)}
+                  className={`w-full rounded-xl border px-2.5 py-2 text-[10px] font-black uppercase tracking-wide transition-colors ${
+                    selected
+                      ? "border-(--accent) bg-(--accent-soft) text-(--accent)"
+                      : "border-(--border) text-(--text-secondary) hover:text-(--text-primary)"
+                  } ${isCollapsed ? "text-[9px]" : ""}`}
+                  title={account.name}
+                >
+                  {isCollapsed ? account.initials : account.name}
+                </button>
+              );
+            })}
           </div>
         </div>
       </aside>

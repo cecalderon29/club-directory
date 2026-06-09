@@ -29,6 +29,8 @@ interface CalendarEvent {
   isFavorite: boolean;
 }
 
+const MOCK_FAVORITES = [1, 3, 4];
+
 const CalendarPage = ({ clubsData: propClubs }: { clubsData?: Club[] }) => {
   // Use prop clubs if provided, otherwise use server clubs
   const clubsData = propClubs && propClubs.length > 0 ? propClubs : serverClubs;
@@ -37,9 +39,6 @@ const CalendarPage = ({ clubsData: propClubs }: { clubsData?: Club[] }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const today = new Date();
-
-  // Mock Favorites IDs (Replace with your state logic)
-  const mockFavorites = [1, 3, 4]; 
 
   // 1. Correctly derive year and month from state
   const year = currentDate.getFullYear();
@@ -52,7 +51,7 @@ const CalendarPage = ({ clubsData: propClubs }: { clubsData?: Club[] }) => {
     const monthShort = currentDate.toLocaleString('default', { month: 'short' });
     
     clubsData.forEach((club: Club) => {
-      if (showFavoritesOnly && !mockFavorites.includes(club.id)) return;
+      if (showFavoritesOnly && !MOCK_FAVORITES.includes(club.id)) return;
 
       if (club.events) {
         club.events.forEach((event: { name: string; date: string }) => {
@@ -62,17 +61,67 @@ const CalendarPage = ({ clubsData: propClubs }: { clubsData?: Club[] }) => {
               ...event,
               clubId: club.id,
               clubName: club.name,
-              clubCategory: club.category,
-              location: club.location,
-              time: club.time,
-              isFavorite: mockFavorites.includes(club.id)
-            });
-          }
-        });
-      }
-    });
+                clubCategory: club.category,
+                location: club.location,
+                time: club.time,
+                isFavorite: MOCK_FAVORITES.includes(club.id)
+              });
+            }
+          });
+        }
+      });
     return events;
   }, [clubsData, showFavoritesOnly, currentDate]);
+
+  const exampleEvents = useMemo((): CalendarEvent[] => {
+    const monthShort = currentDate.toLocaleString('default', { month: 'short' });
+    const sample: CalendarEvent[] = [
+      {
+        name: 'Club Fair Preview',
+        date: `${monthShort} 5`,
+        clubId: 1,
+        clubName: 'Computer Science Club',
+        clubCategory: 'STEM',
+        location: 'Main Commons',
+        time: '3:30 PM - 4:30 PM',
+        isFavorite: true
+      },
+      {
+        name: 'Leadership Workshop',
+        date: `${monthShort} 12`,
+        clubId: 7,
+        clubName: 'Key Club',
+        clubCategory: 'Service',
+        location: 'Room 210',
+        time: '7:15 AM - 7:45 AM',
+        isFavorite: true
+      },
+      {
+        name: 'Open Rehearsal',
+        date: `${monthShort} 19`,
+        clubId: 3,
+        clubName: 'Drama Club',
+        clubCategory: 'Arts',
+        location: 'Main Auditorium',
+        time: '3:45 PM - 5:00 PM',
+        isFavorite: true
+      },
+      {
+        name: 'Weekend Skills Clinic',
+        date: `${monthShort} 24`,
+        clubId: 2,
+        clubName: 'Robotics Team',
+        clubCategory: 'STEM',
+        location: 'Tech Lab A',
+        time: '10:00 AM - 12:00 PM',
+        isFavorite: false
+      }
+    ];
+
+    return showFavoritesOnly ? sample.filter((event) => event.isFavorite) : sample;
+  }, [currentDate, showFavoritesOnly]);
+
+  const displayedEvents = filteredEvents.length > 0 ? filteredEvents : exampleEvents;
 
   // 3. Navigation Handlers that update state correctly
   const prevMonth = () => {
@@ -97,7 +146,7 @@ const CalendarPage = ({ clubsData: propClubs }: { clubsData?: Club[] }) => {
   const getEventsForDay = (day: number) => {
     const monthShort = currentDate.toLocaleString('default', { month: 'short' });
     const dateString = `${monthShort} ${day}`;
-    return filteredEvents.filter(e => e.date === dateString);
+    return displayedEvents.filter(e => e.date === dateString);
   };
 
   return (
@@ -160,7 +209,7 @@ const CalendarPage = ({ clubsData: propClubs }: { clubsData?: Club[] }) => {
               </h3>
               
               <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-1 custom-scrollbar">
-                {filteredEvents.map((event, index) => (
+                {displayedEvents.map((event, index) => (
                   <div key={index} className="bg-[var(--surface-soft)] rounded-2xl p-4 border-2 border-[var(--border)] hover:border-[var(--accent)] transition-all group">
                     <div className="flex justify-between items-start mb-2">
                       <div className="bg-[var(--accent)] text-[var(--text-inverse)] text-[10px] font-black px-2 py-0.5 rounded uppercase">
@@ -188,7 +237,7 @@ const CalendarPage = ({ clubsData: propClubs }: { clubsData?: Club[] }) => {
                   </div>
                 ))}
                 
-                {filteredEvents.length === 0 && (
+                {displayedEvents.length === 0 && (
                   <div className="text-center py-12 px-4 border-2 border-dashed border-[var(--border)] rounded-3xl bg-[var(--surface-soft)]">
                     <p className="text-sm font-black text-[var(--text-secondary)] italic">No events scheduled for {monthName}.</p>
                   </div>

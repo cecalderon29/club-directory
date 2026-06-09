@@ -1,46 +1,84 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Mail, MapPin, Pencil, Save, Users, X } from "lucide-react";
+import { Mail, MapPin, Pencil, Save, Tag, Users, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { Club, getClubs } from "../data/clubs";
+import { useAccount } from "../contexts/AccountContext";
 
-type EditableClubFields = Pick<Club, "name" | "category" | "description" | "day" | "time" | "location" | "dues">;
+type SocialPlatform = "instagram" | "twitter" | "facebook" | "remind";
+
+type EditableClubFields = Pick<
+  Club,
+  "name" | "description" | "day" | "time" | "location" | "dues" | "socials" | "tags"
+>;
+
+const SOCIAL_LABELS: Record<SocialPlatform, string> = {
+  instagram: "Instagram",
+  twitter: "Twitter / X",
+  facebook: "Facebook",
+  remind: "Remind",
+};
+
+const DEFAULT_TAG_OPTIONS = [
+  "STEM",
+  "Arts",
+  "Service",
+  "Leadership",
+  "Academic",
+  "Competition",
+  "Beginner Friendly",
+  "Performance",
+  "Community",
+  "Volunteer",
+  "Outdoors",
+  "Social",
+];
+
+const SOCIAL_PLATFORMS: SocialPlatform[] = ["instagram", "twitter", "facebook", "remind"];
 
 export default function AdminPage() {
+  const router = useRouter();
+  const { currentAccount } = useAccount();
   const [clubs, setClubs] = useState<Club[]>(() => getClubs());
   const [editingClubId, setEditingClubId] = useState<number | null>(null);
   const [clubDraft, setClubDraft] = useState<EditableClubFields | null>(null);
+  const managedClubs = useMemo(() => {
+    if (currentAccount.role !== "teacher" || !currentAccount.sponsorEmail) {
+      return [];
+    }
 
-  const sponsors = useMemo(
-    () =>
-      Array.from(
-        new Map(
-          clubs.map((club) => [club.sponsor.email, { name: club.sponsor.name, email: club.sponsor.email }])
-        ).values()
-      ),
-    [clubs]
-  );
+    return clubs.filter((club) => club.sponsor.email === currentAccount.sponsorEmail);
+  }, [clubs, currentAccount.role, currentAccount.sponsorEmail]);
 
-  const [selectedSponsorEmail, setSelectedSponsorEmail] = useState(() => getClubs()[0]?.sponsor.email ?? "");
+  useEffect(() => {
+    if (currentAccount.role !== "teacher") {
+      router.replace("/dashboard");
+    }
+  }, [currentAccount.role, router]);
 
-  const managedClubs = useMemo(
-    () => clubs.filter((club) => club.sponsor.email === selectedSponsorEmail),
-    [clubs, selectedSponsorEmail]
-  );
-
-  const selectedSponsorName =
-    sponsors.find((sponsor) => sponsor.email === selectedSponsorEmail)?.name ?? "Sponsor";
+  const availableTags = useMemo(() => {
+    const existingTags = clubs.flatMap((club) => club.tags ?? []);
+    return Array.from(new Set([...DEFAULT_TAG_OPTIONS, ...existingTags])).sort((a, b) => a.localeCompare(b));
+  }, [clubs]);
 
   const startEdit = (club: Club) => {
     setEditingClubId(club.id);
     setClubDraft({
       name: club.name,
-      category: club.category,
       description: club.description,
       day: club.day,
       time: club.time,
       location: club.location,
       dues: club.dues,
+      tags: club.tags ?? [],
+      socials: {
+        instagram: club.socials.instagram ?? "",
+        twitter: club.socials.twitter ?? "",
+        facebook: club.socials.facebook ?? "",
+        remind: club.socials.remind ?? "",
+      },
     });
   };
 
@@ -53,11 +91,72 @@ export default function AdminPage() {
     setClubDraft((prev) => (prev ? { ...prev, [field]: value } : prev));
   };
 
+  const updateDraftSocial = (platform: SocialPlatform, value: string) => {
+    setClubDraft((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        socials: {
+          ...prev.socials,
+          [platform]: value,
+        },
+      };
+    });
+  };
+
+  const toggleSocialPlatform = (platform: SocialPlatform) => {
+    setClubDraft((prev) => {
+      if (!prev) return prev;
+      const currentlyEnabled = Boolean(prev.socials[platform]?.trim());
+      return {
+        ...prev,
+        socials: {
+          ...prev.socials,
+          [platform]: currentlyEnabled ? "" : prev.socials[platform] ?? "@",
+        },
+      };
+    });
+  };
+
+  const toggleTag = (tag: string) => {
+    setClubDraft((prev) => {
+      if (!prev) return prev;
+      const prevTags = prev.tags ?? [];
+      const nextTags = prevTags.includes(tag) ? prevTags.filter((item) => item !== tag) : [...prevTags, tag];
+      return { ...prev, tags: nextTags };
+    });
+  };
+
   const saveEdit = (clubId: number) => {
     if (!clubDraft) return;
-    setClubs((prev) => prev.map((club) => (club.id === clubId ? { ...club, ...clubDraft } : club)));
+
+    const normalizedTags = Array.from(new Set((clubDraft.tags ?? []).map((tag) => tag.trim()).filter(Boolean)));
+
+    const normalizedSocials = SOCIAL_PLATFORMS.reduce<Club["socials"]>((acc, platform) => {
+      const value = clubDraft.socials[platform]?.trim() ?? "";
+      acc[platform] = value;
+      return acc;
+    }, {});
+
+    setClubs((prev) =>
+      prev.map((club) =>
+        club.id === clubId
+          ? {
+              ...club,
+              ...clubDraft,
+              tags: normalizedTags,
+              socials: normalizedSocials,
+            }
+          : club
+      )
+    );
+
     cancelEdit();
   };
+
+  if (currentAccount.role !== "teacher") {
+    return null;
+  }
 
   return (
     <div className="h-full overflow-y-auto bg-(--background)">
@@ -65,36 +164,14 @@ export default function AdminPage() {
         <div className="rounded-3xl border border-(--border) bg-(--surface) p-6 shadow-(--shadow-card)">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div>
-              <h1 className="text-3xl md:text-4xl font-black tracking-tight">Sponsor Admin</h1>
-              <p className="text-(--text-secondary) mt-2">
-                View only the clubs managed by the selected sponsor.
-              </p>
-            </div>
-
-            <div className="w-full md:w-80">
-              <label htmlFor="sponsor" className="block text-xs font-black uppercase tracking-wider mb-2 text-(--text-muted)">
-                Sponsor
-              </label>
-              <select
-                id="sponsor"
-                value={selectedSponsorEmail}
-                onChange={(event) => setSelectedSponsorEmail(event.target.value)}
-                className="w-full rounded-xl border border-(--border) bg-(--surface-strong) p-3 text-sm font-semibold outline-none focus:ring-2 focus:ring-(--accent)"
-              >
-                {sponsors.map((sponsor) => (
-                  <option key={sponsor.email} value={sponsor.email}>
-                    {sponsor.name} ({sponsor.email})
-                  </option>
-                ))}
-              </select>
+               <h1 className="text-3xl md:text-4xl font-black tracking-tight">Sponsor Admin</h1>
+               <p className="text-(--text-secondary) mt-2">Manage detailed club information for your sponsored clubs.</p>
             </div>
           </div>
         </div>
 
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-black uppercase tracking-tight">
-            {selectedSponsorName}&apos;s Clubs
-          </h2>
+          <h2 className="text-lg font-black uppercase tracking-tight">All Clubs</h2>
           <span className="px-3 py-1 rounded-full bg-(--accent-soft) text-(--accent) text-xs font-black uppercase">
             {managedClubs.length} Club{managedClubs.length === 1 ? "" : "s"}
           </span>
@@ -107,28 +184,25 @@ export default function AdminPage() {
               return (
                 <article
                   key={club.id}
-                  className="rounded-2xl border border-(--border) bg-(--surface) p-5 shadow-(--shadow-card)"
+                  className={`rounded-2xl border border-(--border) bg-(--surface) shadow-(--shadow-card) ${
+                    isEditing ? "p-6 md:col-span-2 lg:col-span-3" : "p-5"
+                  }`}
                 >
                   <div className="mb-4 flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       {isEditing ? (
-                        <>
-                          <input
-                            value={clubDraft.category}
-                            onChange={(event) => updateDraftField("category", event.target.value)}
-                            className="mb-2 w-full rounded-lg border border-(--border) bg-(--surface-strong) px-3 py-2 text-[10px] font-black uppercase tracking-wider text-(--accent) outline-none focus:ring-2 focus:ring-(--accent)"
-                          />
+                        <div>
+                          <label className="block mb-1 text-[10px] font-black uppercase tracking-wider text-(--text-muted)">
+                            Club Name
+                          </label>
                           <input
                             value={clubDraft.name}
                             onChange={(event) => updateDraftField("name", event.target.value)}
-                            className="w-full rounded-lg border border-(--border) bg-(--surface-strong) px-3 py-2 text-xl font-black leading-tight outline-none focus:ring-2 focus:ring-(--accent)"
+                            className="w-full rounded-lg border border-(--border) bg-(--surface-strong) px-3 py-2 text-base font-black leading-tight outline-none focus:ring-2 focus:ring-(--accent)"
                           />
-                        </>
+                        </div>
                       ) : (
                         <>
-                          <div className="text-[10px] font-black uppercase tracking-wider text-(--accent) mb-1">
-                            {club.category}
-                          </div>
                           <h3 className="text-xl font-black leading-tight">{club.name}</h3>
                         </>
                       )}
@@ -163,73 +237,176 @@ export default function AdminPage() {
                   </div>
 
                   {isEditing ? (
-                    <textarea
-                      value={clubDraft.description}
-                      onChange={(event) => updateDraftField("description", event.target.value)}
-                      className="w-full min-h-24 rounded-lg border border-(--border) bg-(--surface-strong) p-3 text-sm text-(--text-secondary) outline-none focus:ring-2 focus:ring-(--accent)"
-                    />
-                  ) : (
-                    <p className="text-sm text-(--text-secondary) line-clamp-4">{club.description}</p>
-                  )}
-
-                  <div className="mt-5 space-y-2 text-sm">
-                    <div className="flex items-center gap-2 text-(--text-secondary)">
-                      <MapPin size={15} className="text-(--accent)" />
-                      {isEditing ? (
-                        <input
-                          value={clubDraft.location}
-                          onChange={(event) => updateDraftField("location", event.target.value)}
-                          className="w-full rounded-lg border border-(--border) bg-(--surface-strong) px-3 py-2 outline-none focus:ring-2 focus:ring-(--accent)"
-                        />
-                      ) : (
-                        <span>{club.location}</span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2 text-(--text-secondary)">
-                      <Mail size={15} className="text-(--accent)" />
-                      <span>{club.sponsor.email}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-(--text-secondary)">
-                      <Users size={15} className="text-(--accent)" />
-                      {isEditing ? (
-                        <div className="grid grid-cols-2 gap-2 w-full">
-                          <input
-                            value={clubDraft.day}
-                            onChange={(event) => updateDraftField("day", event.target.value)}
-                            className="w-full rounded-lg border border-(--border) bg-(--surface-strong) px-3 py-2 outline-none focus:ring-2 focus:ring-(--accent)"
-                          />
-                          <input
-                            value={clubDraft.time}
-                            onChange={(event) => updateDraftField("time", event.target.value)}
-                            className="w-full rounded-lg border border-(--border) bg-(--surface-strong) px-3 py-2 outline-none focus:ring-2 focus:ring-(--accent)"
-                          />
-                        </div>
-                      ) : (
-                        <span>
-                          {club.day} · {club.time}
-                        </span>
-                      )}
-                    </div>
-                    {isEditing && (
-                      <div className="pt-1">
+                    <div className="space-y-6">
+                      <div>
                         <label className="block text-[10px] font-black uppercase tracking-wider text-(--text-muted) mb-1">
-                          Club Dues
+                          Club Description
                         </label>
-                        <input
-                          value={clubDraft.dues}
-                          onChange={(event) => updateDraftField("dues", event.target.value)}
-                          className="w-full rounded-lg border border-(--border) bg-(--surface-strong) px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-(--accent)"
+                        <textarea
+                          value={clubDraft.description}
+                          onChange={(event) => updateDraftField("description", event.target.value)}
+                          className="w-full min-h-36 rounded-lg border border-(--border) bg-(--surface-strong) p-3 text-sm text-(--text-secondary) outline-none focus:ring-2 focus:ring-(--accent)"
                         />
                       </div>
-                    )}
-                  </div>
+
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <section className="rounded-xl border border-(--border) bg-(--surface-strong) p-4 space-y-3">
+                          <h4 className="text-sm font-black uppercase tracking-wider">Meeting Details</h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                              <label className="block text-[10px] font-black uppercase tracking-wider text-(--text-muted) mb-1">
+                                Day
+                              </label>
+                              <input
+                                value={clubDraft.day}
+                                onChange={(event) => updateDraftField("day", event.target.value)}
+                                className="w-full rounded-lg border border-(--border) bg-(--surface) px-3 py-2 outline-none focus:ring-2 focus:ring-(--accent)"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-black uppercase tracking-wider text-(--text-muted) mb-1">
+                                Time
+                              </label>
+                              <input
+                                value={clubDraft.time}
+                                onChange={(event) => updateDraftField("time", event.target.value)}
+                                className="w-full rounded-lg border border-(--border) bg-(--surface) px-3 py-2 outline-none focus:ring-2 focus:ring-(--accent)"
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block text-[10px] font-black uppercase tracking-wider text-(--text-muted) mb-1">
+                              Location
+                            </label>
+                            <input
+                              value={clubDraft.location}
+                              onChange={(event) => updateDraftField("location", event.target.value)}
+                              className="w-full rounded-lg border border-(--border) bg-(--surface) px-3 py-2 outline-none focus:ring-2 focus:ring-(--accent)"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-[10px] font-black uppercase tracking-wider text-(--text-muted) mb-1">
+                              Club Dues
+                            </label>
+                            <input
+                              value={clubDraft.dues}
+                              onChange={(event) => updateDraftField("dues", event.target.value)}
+                              className="w-full rounded-lg border border-(--border) bg-(--surface) px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-(--accent)"
+                            />
+                          </div>
+                        </section>
+
+                        <section className="rounded-xl border border-(--border) bg-(--surface-strong) p-4 space-y-3">
+                          <h4 className="text-sm font-black uppercase tracking-wider">Tags</h4>
+                          <p className="text-xs text-(--text-secondary)">Choose all tags that fit this club.</p>
+                          <div className="flex flex-wrap gap-2">
+                            {availableTags.map((tag) => {
+                              const selected = (clubDraft.tags ?? []).includes(tag);
+                              return (
+                                <button
+                                  key={tag}
+                                  type="button"
+                                  onClick={() => toggleTag(tag)}
+                                  className={`px-3 py-1.5 rounded-full border text-xs font-black uppercase tracking-wider transition-colors ${
+                                    selected
+                                      ? "bg-(--accent-soft) text-(--accent) border-(--accent)"
+                                      : "bg-(--surface) text-(--text-secondary) border-(--border) hover:text-(--text-primary)"
+                                  }`}
+                                >
+                                  {tag}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </section>
+                      </div>
+
+                      <section className="rounded-xl border border-(--border) bg-(--surface-strong) p-4 space-y-3">
+                        <h4 className="text-sm font-black uppercase tracking-wider">Social Media</h4>
+                        <p className="text-xs text-(--text-secondary)">Select the platforms this club uses and set each handle or link.</p>
+
+                        <div className="flex flex-wrap gap-2">
+                          {SOCIAL_PLATFORMS.map((platform) => {
+                            const enabled = Boolean(clubDraft.socials[platform]?.trim());
+                            return (
+                              <button
+                                key={platform}
+                                type="button"
+                                onClick={() => toggleSocialPlatform(platform)}
+                                className={`px-3 py-1.5 rounded-full border text-xs font-black uppercase tracking-wider transition-colors ${
+                                  enabled
+                                    ? "bg-(--accent-soft) text-(--accent) border-(--accent)"
+                                    : "bg-(--surface) text-(--text-secondary) border-(--border) hover:text-(--text-primary)"
+                                }`}
+                              >
+                                {SOCIAL_LABELS[platform]}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {SOCIAL_PLATFORMS.filter((platform) => Boolean(clubDraft.socials[platform]?.trim())).map((platform) => (
+                            <div key={platform}>
+                              <label className="block text-[10px] font-black uppercase tracking-wider text-(--text-muted) mb-1">
+                                {SOCIAL_LABELS[platform]}
+                              </label>
+                              <input
+                                value={clubDraft.socials[platform] ?? ""}
+                                onChange={(event) => updateDraftSocial(platform, event.target.value)}
+                                placeholder={platform === "remind" ? "@clubcode" : "@handle or full URL"}
+                                className="w-full rounded-lg border border-(--border) bg-(--surface) px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-(--accent)"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </section>
+                    </div>
+                  ) : (
+                    <>
+                      <p className="text-sm text-(--text-secondary) line-clamp-4">{club.description}</p>
+
+                      {(club.tags?.length ?? 0) > 0 && (
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          {(club.tags ?? []).map((tag) => (
+                            <span
+                              key={`${club.id}-${tag}`}
+                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-(--surface-strong) border border-(--border) text-[10px] font-black uppercase tracking-wider text-(--text-secondary)"
+                            >
+                              <Tag size={11} />
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="mt-5 space-y-2 text-sm">
+                        <div className="flex items-center gap-2 text-(--text-secondary)">
+                          <MapPin size={15} className="text-(--accent)" />
+                          <span>{club.location}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-(--text-secondary)">
+                          <Mail size={15} className="text-(--accent)" />
+                          <span>{club.sponsor.email}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-(--text-secondary)">
+                          <Users size={15} className="text-(--accent)" />
+                          <span>
+                            {club.day} · {club.time}
+                          </span>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </article>
               );
             })}
           </div>
         ) : (
           <div className="rounded-2xl border border-(--border) bg-(--surface) p-8 text-center text-(--text-secondary)">
-            No clubs are assigned to this sponsor.
+            No clubs are available.
           </div>
         )}
       </div>
