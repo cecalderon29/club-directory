@@ -2,14 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import { getClubs, getCategories, Club } from '../data/clubs';
+import { getClubsFromDatabase } from '../data/db-clubs';
 import { ClubCard } from './components/ClubCard';
 import { ClubModal } from './components/ClubModal';
 import { SearchBar } from './components/SearchBar';
 import { CategoryFilter } from './components/CategoryFilter';
-
-// Get clubs data from JSON files (server-side)
-const serverClubs = getClubs();
-const CATEGORIES = getCategories(serverClubs);
 
 const ClubsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -17,12 +14,36 @@ const ClubsPage = () => {
   const [selectedClub, setSelectedClub] = useState<Club | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [favorites, setFavorites] = useState<number[]>([]);
+  const [clubsData, setClubsData] = useState<Club[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Use clubs from JSON files
-  const CLUBS_DATA = serverClubs;
+  // Load clubs on component mount
+  useEffect(() => {
+    const loadClubs = async () => {
+      try {
+        setLoading(true);
+        // Try to fetch from database first
+        const dbClubs = await getClubsFromDatabase();
+        setClubsData(dbClubs);
+        setError(null);
+      } catch (err) {
+        console.warn('Failed to load from database, falling back to JSON data:', err);
+        // Fall back to JSON data
+        setClubsData(getClubs());
+        setError(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadClubs();
+  }, []);
+
+  const CATEGORIES = getCategories(clubsData);
 
   // Filter logic
-  const filteredClubs = CLUBS_DATA.filter(club => {
+  const filteredClubs = clubsData.filter(club => {
     const matchesSearch = club.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           club.description.toLowerCase().includes(searchQuery.toLowerCase());
     
@@ -71,6 +92,16 @@ const ClubsPage = () => {
     };
   }, []);
 
+  if (loading) {
+    return (
+      <div className="h-full min-h-full flex flex-col items-center justify-center bg-[radial-gradient(circle_at_top_right,rgb(239,68,68),transparent_30%),linear-gradient(160deg,rgb(255,200,200),rgb(255,180,180))]">
+        <div className="text-center">
+          <p className="text-xl font-bold text-(--text-primary)">Loading clubs...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="h-full min-h-full flex flex-col relative overflow-hidden bg-[radial-gradient(circle_at_top_right,rgb(239,68,68),transparent_30%),linear-gradient(160deg,rgb(255,200,200),rgb(255,180,180))]">
       <div className="relative z-10 p-4 sm:p-8 flex flex-col h-full overflow-y-auto">
@@ -79,6 +110,12 @@ const ClubsPage = () => {
           <h1 className="text-5xl md:text-6xl font-black text-(--text-primary) tracking-tight mb-8 drop-shadow-md">
             Explore Clubs
           </h1>
+          
+          {error && (
+            <div className="mb-4 p-4 bg-yellow-100 text-yellow-800 rounded-lg">
+              <p className="text-sm">Using local data - database connection unavailable</p>
+            </div>
+          )}
           
           {/* Search Bar Component */}
           <SearchBar value={searchQuery} onChange={setSearchQuery} />
