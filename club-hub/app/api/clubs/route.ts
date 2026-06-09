@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import db from '@/lib/db';
+import pool from '@/lib/db';
 import { RowDataPacket, ResultSetHeader } from 'mysql2/promise';
 
 export interface DbClub extends RowDataPacket {
@@ -19,9 +19,11 @@ export interface DbClub extends RowDataPacket {
 // GET all clubs
 export async function GET(request: NextRequest) {
   try {
-    const [rows] = await db.query<DbClub[]>(
+    const connection = await pool.getConnection();
+    const [rows] = await connection.query<DbClub[]>(
       'SELECT * FROM clubs ORDER BY club_id ASC'
     );
+    connection.release();
 
     return NextResponse.json(rows, { status: 200 });
   } catch (error) {
@@ -50,14 +52,16 @@ export async function POST(request: NextRequest) {
       remind_url,
     } = body;
 
-    const [result] = await db.query<ResultSetHeader>(
+    const connection = await pool.getConnection();
+    const [result] = await connection.query<ResultSetHeader>(
       `INSERT INTO clubs (name, description, category, meeting_time, location, contact_email, instagram_url, twitter_url, facebook_url, remind_url)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [name, description, category, meeting_time, location, contact_email, instagram_url, twitter_url, facebook_url, remind_url]
     );
+    connection.release();
 
     return NextResponse.json(
-      { club_id: (result as ResultSetHeader).insertId, ...body },
+      { club_id: result.insertId, ...body },
       { status: 201 }
     );
   } catch (error) {

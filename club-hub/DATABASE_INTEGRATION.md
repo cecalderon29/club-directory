@@ -60,20 +60,23 @@ NEXT_PUBLIC_API_URL=http://localhost:3000
 ```
 
 ### 2. Database Connection
-The application uses the `mysql2/promise` package for database connectivity.
+The application uses the `mysql2/promise` package with connection pooling.
 
-**File:** `club-hub/app/lib/db.ts`
+**File:** `club-hub/lib/db.ts`
 ```typescript
 import mysql from 'mysql2/promise';
 
-const db = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
+const pool = mysql.createPool({
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'club_directory',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
 });
 
-export default db;
+export default pool;
 ```
 
 ### 3. Using Database Data in Components
@@ -113,10 +116,31 @@ If the database connection fails, the application automatically falls back to lo
 - HTTP error responses with appropriate status codes
 - User-friendly error messages in the UI
 
+## Files Structure
+
+```
+club-hub/
+├── lib/
+│   └── db.ts                          # MySQL connection pool
+├── app/
+│   ├── api/
+│   │   ├── clubs/
+│   │   │   ├── route.ts              # GET all, POST new
+│   │   │   └── [id]/route.ts         # GET, PUT, DELETE individual
+│   │   └── favorites/
+│   │       └── route.ts              # Manage favorites
+│   ├── data/
+│   │   ├── clubs.ts                  # JSON fallback data
+│   │   └── db-clubs.ts               # Database helpers
+│   └── clubs/
+│       └── page.tsx                  # Updated page component
+├── .env.local.example                # Configuration template
+└── DATABASE_INTEGRATION.md           # This file
+```
+
 ## Notes
 
 - The database connection uses a connection pool for better performance
 - All queries are parameterized to prevent SQL injection
 - The application transforms database records to match the internal `Club` interface
 - Future enhancements can include club events and images in the database
-

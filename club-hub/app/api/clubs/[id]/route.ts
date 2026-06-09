@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import db from '@/lib/db';
+import pool from '@/lib/db';
 import { RowDataPacket, ResultSetHeader } from 'mysql2/promise';
 
 export interface DbClub extends RowDataPacket {
@@ -23,19 +23,21 @@ export async function GET(
 ) {
   try {
     const clubId = params.id;
-    const [rows] = await db.query<DbClub[]>(
+    const connection = await pool.getConnection();
+    const [rows] = await connection.query<DbClub[]>(
       'SELECT * FROM clubs WHERE club_id = ?',
       [clubId]
     );
+    connection.release();
 
-    if ((rows as DbClub[]).length === 0) {
+    if (rows.length === 0) {
       return NextResponse.json(
         { error: 'Club not found' },
         { status: 404 }
       );
     }
 
-    return NextResponse.json((rows as DbClub[])[0], { status: 200 });
+    return NextResponse.json(rows[0], { status: 200 });
   } catch (error) {
     console.error('Database error:', error);
     return NextResponse.json(
@@ -54,7 +56,8 @@ export async function PUT(
     const clubId = params.id;
     const body = await request.json();
 
-    const [result] = await db.query<ResultSetHeader>(
+    const connection = await pool.getConnection();
+    const [result] = await connection.query<ResultSetHeader>(
       `UPDATE clubs SET name = ?, description = ?, category = ?, meeting_time = ?, location = ?, contact_email = ?, instagram_url = ?, twitter_url = ?, facebook_url = ?, remind_url = ?
        WHERE club_id = ?`,
       [
@@ -71,8 +74,9 @@ export async function PUT(
         clubId,
       ]
     );
+    connection.release();
 
-    if ((result as ResultSetHeader).affectedRows === 0) {
+    if (result.affectedRows === 0) {
       return NextResponse.json(
         { error: 'Club not found' },
         { status: 404 }
@@ -99,12 +103,14 @@ export async function DELETE(
 ) {
   try {
     const clubId = params.id;
-    const [result] = await db.query<ResultSetHeader>(
+    const connection = await pool.getConnection();
+    const [result] = await connection.query<ResultSetHeader>(
       'DELETE FROM clubs WHERE club_id = ?',
       [clubId]
     );
+    connection.release();
 
-    if ((result as ResultSetHeader).affectedRows === 0) {
+    if (result.affectedRows === 0) {
       return NextResponse.json(
         { error: 'Club not found' },
         { status: 404 }

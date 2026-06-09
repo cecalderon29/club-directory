@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import db from '@/lib/db';
+import pool from '@/lib/db';
 import { RowDataPacket, ResultSetHeader } from 'mysql2/promise';
 
 export interface StudentFavorite extends RowDataPacket {
@@ -21,10 +21,12 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const [rows] = await db.query<StudentFavorite[]>(
+    const connection = await pool.getConnection();
+    const [rows] = await connection.query<StudentFavorite[]>(
       'SELECT * FROM student_favorites WHERE student_id = ? ORDER BY favorited_at DESC',
       [studentId]
     );
+    connection.release();
 
     return NextResponse.json(rows, { status: 200 });
   } catch (error) {
@@ -49,23 +51,27 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const connection = await pool.getConnection();
+    
     // Check if favorite already exists
-    const [existing] = await db.query<StudentFavorite[]>(
+    const [existing] = await connection.query<StudentFavorite[]>(
       'SELECT * FROM student_favorites WHERE student_id = ? AND club_id = ?',
       [student_id, club_id]
     );
 
-    if ((existing as StudentFavorite[]).length > 0) {
+    if (existing.length > 0) {
+      connection.release();
       return NextResponse.json(
         { error: 'Club is already favorited' },
         { status: 409 }
       );
     }
 
-    const [result] = await db.query<ResultSetHeader>(
+    const [result] = await connection.query<ResultSetHeader>(
       'INSERT INTO student_favorites (student_id, club_id, favorited_at) VALUES (?, ?, NOW())',
       [student_id, club_id]
     );
+    connection.release();
 
     return NextResponse.json(
       { student_id, club_id, success: true },
@@ -93,12 +99,14 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const [result] = await db.query<ResultSetHeader>(
+    const connection = await pool.getConnection();
+    const [result] = await connection.query<ResultSetHeader>(
       'DELETE FROM student_favorites WHERE student_id = ? AND club_id = ?',
       [student_id, club_id]
     );
+    connection.release();
 
-    if ((result as ResultSetHeader).affectedRows === 0) {
+    if (result.affectedRows === 0) {
       return NextResponse.json(
         { error: 'Favorite not found' },
         { status: 404 }
