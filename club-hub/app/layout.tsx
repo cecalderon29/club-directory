@@ -3,6 +3,7 @@ import "./globals.css";
 import ClientShell from "./components/ClientShell";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AccountProvider } from "./contexts/AccountContext";
+import { StudentProvider } from "./context/StudentContext";
 
 export const metadata: Metadata = {
   title: "ClubHub",
@@ -19,7 +20,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <ThemeProvider>
           <AccountProvider>
-            <ClientShell>{children}</ClientShell>
+            <StudentProvider>
+              <ClientShell>{children}</ClientShell>
+            </StudentProvider>
           </AccountProvider>
         </ThemeProvider>
       </body>
