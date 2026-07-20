@@ -3,7 +3,7 @@ import "./globals.css";
 import ClientShell from "./components/ClientShell";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AccountProvider } from "./contexts/AccountContext";
-import { StudentProvider } from "./context/StudentContext";
+import { StudentProvider } from "./contexts/StudentContext";
 
 export const metadata: Metadata = {
   title: "ClubHub",
