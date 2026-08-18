@@ -6,6 +6,7 @@ import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
 import { useTheme } from "../contexts/ThemeContext";
 import { useAccount } from "../contexts/AccountContext";
+import { canAccessAdmin } from "@/lib/demo-auth";
 
 export default function ClientShell({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -45,10 +46,10 @@ export default function ClientShell({ children }: { children: React.ReactNode })
   }, []);
 
   useEffect(() => {
-    if (pathname === "/admin" && currentAccount.role !== "teacher") {
+    if (pathname === "/admin" && !canAccessAdmin(currentAccount)) {
       router.replace("/dashboard");
     }
-  }, [pathname, currentAccount.role, router]);
+  }, [pathname, currentAccount, router]);
 
   return (
     <div className="flex h-screen font-sans transition-colors duration-300 overflow-hidden bg-(--background) text-(--foreground)">

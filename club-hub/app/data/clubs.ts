@@ -17,7 +17,8 @@ export interface Club {
   location: string;
   dues: string;
   sponsor: { name: string; email: string };
-  socials: { instagram?: string; twitter?: string; facebook?: string; remind?: string };
+  authorizedUserIds?: string[];
+  socials: { instagram?: string; twitter?: string; facebook?: string };
   events: { name: string; date: string }[];
   images: string[];
 }

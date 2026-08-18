@@ -28,6 +28,7 @@
   --overlay: rgba(0,0,0,0.5);
   --hover-surface: rgba(248,250,252,0.95);
   --hover-surface-strong: rgba(255,255,255,0.9);
+  --clubs-gradient: radial-gradient(circle_at_top_right,rgb(239,68,68),transparent 30%),linear-gradient(160deg,rgb(255,200,200),rgb(255,180,180));
 }
 
 .dark {
@@ -57,6 +58,7 @@
   --overlay: rgba(0,0,0,0.55);
   --hover-surface: rgba(255,255,255,0.08);
   --hover-surface-strong: rgba(255,255,255,0.12);
+  --clubs-gradient: radial-gradient(circle_at_top_right,rgba(220,38,38,0.35),transparent 40%),linear-gradient(160deg,#111827,#1f2937);
 }
 
 html,
