@@ -1,35 +1,8 @@
 "use client";
 
 import { createContext, useContext, useMemo, useState } from "react";
-
-export type DemoAccountRole = "student" | "teacher";
-
-export interface DemoAccount {
-  id: string;
-  name: string;
-  role: DemoAccountRole;
-  title: string;
-  initials: string;
-  sponsorEmail?: string;
-}
-
-export const DEMO_ACCOUNTS: DemoAccount[] = [
-  {
-    id: "student-demo",
-    name: "Student Demo",
-    role: "student",
-    title: "Guest Profile",
-    initials: "SD",
-  },
-  {
-    id: "teacher-demo",
-    name: "Derek Miller",
-    role: "teacher",
-    title: "Sponsor Account",
-    initials: "DM",
-    sponsorEmail: "djmiller@naperville203.org",
-  },
-];
+import { DemoAccount, DEMO_ACCOUNTS } from "@/lib/demo-auth";
+export type { DemoAccount } from "@/lib/demo-auth";
 
 interface AccountContextValue {
   accounts: DemoAccount[];

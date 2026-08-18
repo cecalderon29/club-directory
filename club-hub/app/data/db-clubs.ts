@@ -11,7 +11,6 @@ export interface DbClub {
   instagram_url?: string;
   twitter_url?: string;
   facebook_url?: string;
-  remind_url?: string;
 }
 
 /**
@@ -47,7 +46,6 @@ export async function getClubsFromDatabase(): Promise<Club[]> {
         instagram: club.instagram_url,
         twitter: club.twitter_url,
         facebook: club.facebook_url,
-        remind: club.remind_url,
       },
       events: [], // You may want to fetch events separately
       images: [], // You may want to fetch images separately
@@ -93,7 +91,6 @@ export async function getClubFromDatabase(clubId: number): Promise<Club | null> 
         instagram: dbClub.instagram_url,
         twitter: dbClub.twitter_url,
         facebook: dbClub.facebook_url,
-        remind: dbClub.remind_url,
       },
       events: [],
       images: [],

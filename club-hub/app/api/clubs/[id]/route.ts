@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import pool from '@/lib/db';
 import { RowDataPacket, ResultSetHeader } from 'mysql2/promise';
+import { canManageClub, getDemoAccountFromHeaders } from '@/lib/demo-auth';
 
 export interface DbClub extends RowDataPacket {
   club_id: number;
@@ -13,16 +14,15 @@ export interface DbClub extends RowDataPacket {
   instagram_url?: string;
   twitter_url?: string;
   facebook_url?: string;
-  remind_url?: string;
 }
 
 // GET a specific club by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const clubId = params.id;
+    const { id: clubId } = await params;
     const connection = await pool.getConnection();
     const [rows] = await connection.query<DbClub[]>(
       'SELECT * FROM clubs WHERE club_id = ?',
@@ -50,15 +50,45 @@ export async function GET(
 // UPDATE a club
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const clubId = params.id;
+    const { id: clubId } = await params;
     const body = await request.json();
+    const currentAccount = getDemoAccountFromHeaders(request.headers);
 
     const connection = await pool.getConnection();
+    const [existingRows] = await connection.query<DbClub[]>(
+      'SELECT contact_email FROM clubs WHERE club_id = ?',
+      [clubId]
+    );
+
+    if (existingRows.length === 0) {
+      connection.release();
+      return NextResponse.json({ error: 'Club not found' }, { status: 404 });
+    }
+
+    const existingClub = existingRows[0];
+
+    if (!canManageClub(currentAccount, existingClub.contact_email)) {
+      connection.release();
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
+    if (
+      currentAccount.role === 'teacher' &&
+      currentAccount.sponsorEmail &&
+      body.contact_email?.toLowerCase() !== existingClub.contact_email.toLowerCase()
+    ) {
+      connection.release();
+      return NextResponse.json(
+        { error: 'Only dean accounts can reassign club sponsorship' },
+        { status: 403 }
+      );
+    }
+
     const [result] = await connection.query<ResultSetHeader>(
-      `UPDATE clubs SET name = ?, description = ?, category = ?, meeting_time = ?, location = ?, contact_email = ?, instagram_url = ?, twitter_url = ?, facebook_url = ?, remind_url = ?
+      `UPDATE clubs SET name = ?, description = ?, category = ?, meeting_time = ?, location = ?, contact_email = ?, instagram_url = ?, twitter_url = ?, facebook_url = ?
        WHERE club_id = ?`,
       [
         body.name,
@@ -70,7 +100,6 @@ export async function PUT(
         body.instagram_url,
         body.twitter_url,
         body.facebook_url,
-        body.remind_url,
         clubId,
       ]
     );
@@ -99,11 +128,27 @@ export async function PUT(
 // DELETE a club
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const clubId = params.id;
+    const { id: clubId } = await params;
+    const currentAccount = getDemoAccountFromHeaders(request.headers);
     const connection = await pool.getConnection();
+    const [existingRows] = await connection.query<DbClub[]>(
+      'SELECT contact_email FROM clubs WHERE club_id = ?',
+      [clubId]
+    );
+
+    if (existingRows.length === 0) {
+      connection.release();
+      return NextResponse.json({ error: 'Club not found' }, { status: 404 });
+    }
+
+    if (!canManageClub(currentAccount, existingRows[0].contact_email)) {
+      connection.release();
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     const [result] = await connection.query<ResultSetHeader>(
       'DELETE FROM clubs WHERE club_id = ?',
       [clubId]

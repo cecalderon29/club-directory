@@ -3,7 +3,6 @@ import {
   X, 
   MapPin, 
   Clock, 
-  Bell,
   Mail, 
   DollarSign, 
   CalendarDays,
@@ -56,7 +55,7 @@ const ClubModalComponent = ({
 }: ClubModalProps) => {
   const isFavorite = favorites.includes(club.id);
 
-  const toSocialUrl = (platform: 'instagram' | 'twitter' | 'facebook' | 'remind', value?: string) => {
+  const toSocialUrl = (platform: 'instagram' | 'twitter' | 'facebook', value?: string) => {
     if (!value) return null;
     const trimmed = value.trim();
     if (!trimmed) return null;
@@ -69,8 +68,7 @@ const ClubModalComponent = ({
 
     if (platform === 'instagram') return `https://www.instagram.com/${normalized}`;
     if (platform === 'twitter') return `https://x.com/${normalized}`;
-    if (platform === 'facebook') return `https://www.facebook.com/${normalized}`;
-    return `https://www.remind.com/join/${normalized}`;
+    return platform === 'facebook' ? `https://www.facebook.com/${normalized}` : null;
   };
 
   return (
@@ -255,17 +253,6 @@ const ClubModalComponent = ({
                         title="Facebook"
                       >
                         <FacebookLogo size={18} />
-                      </a>
-                    )}
-                    {club.socials.remind && (
-                      <a
-                        href={toSocialUrl('remind', club.socials.remind) || '#'}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 px-4 py-3 rounded-xl font-bold text-xs transition-all bg-[#dbeafe] text-[#1d4ed8] border border-[#93c5fd] hover:bg-[#bfdbfe]"
-                        title="Remind"
-                      >
-                        <Bell size={16} /> {club.socials.remind}
                       </a>
                     )}
                   </div>

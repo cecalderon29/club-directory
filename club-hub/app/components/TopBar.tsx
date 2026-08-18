@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Bell } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { DemoAccount } from '../contexts/AccountContext';
 
 interface TopBarProps {
@@ -15,13 +15,6 @@ const TopBar: React.FC<TopBarProps> = ({ setIsOpen, currentAccount }) => (
     </button>
 
     <div className="ml-auto flex items-center justify-end gap-3">
-      {currentAccount.role === "teacher" && (
-        <button className="p-2 rounded-lg transition-colors relative hover:bg-(--hover-surface) text-(--text-secondary)">
-          <Bell size={18} />
-          <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-(--accent) rounded-full border border-(--background)"></span>
-        </button>
-      )}
-
       <div className="flex items-center gap-2.5 pl-3 border-l border-(--border)">
         <div className="text-right hidden sm:block">
           <div className="text-xs font-bold leading-none mb-0.5">

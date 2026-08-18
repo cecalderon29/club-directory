@@ -1,4 +1,3 @@
-
 {
     "id": 1,
     "name": "Computer Science Club",
@@ -15,11 +14,13 @@
     "socials": {
         "instagram": "@nchs_csclub",
         "twitter": "",
-        "facebook": "nchscsclub",
-        "remind": "@csclub27"
+        "facebook": "nchscsclub"
     },
     "events": [
-        { "name": "Kickoff Meeting", "date": "Sept 10" }
+        {
+            "name": "Kickoff Meeting",
+            "date": "Sept 10"
+        }
     ],
     "images": [
         "/images/comp-sci.jpeg"
