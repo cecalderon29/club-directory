@@ -12,12 +12,17 @@
         "email": "ranger@school.edu"
     },
     "socials": {
-        "instagram": "@nchs_hikes",
-        "remind": "@hike24"
+        "instagram": "@nchs_hikes"
     },
     "events": [
-        { "name": "Starved Rock Trip", "date": "Sept 20" },
-        { "name": "Local Trail Cleanup", "date": "Oct 5" }
+        {
+            "name": "Starved Rock Trip",
+            "date": "Sept 20"
+        },
+        {
+            "name": "Local Trail Cleanup",
+            "date": "Oct 5"
+        }
     ],
     "images": [
         "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=800&q=80",

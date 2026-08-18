@@ -68,7 +68,7 @@ const ClubsPage = () => {
   }, []);
 
   return (
-    <div className="h-full min-h-full flex flex-col relative overflow-hidden bg-[radial-gradient(circle_at_top_right,rgb(239,68,68),transparent_30%),linear-gradient(160deg,rgb(255,200,200),rgb(255,180,180))]">
+    <div className="h-full min-h-full flex flex-col relative overflow-hidden bg-[var(--clubs-gradient)]">
       <div className="relative z-10 p-4 sm:p-8 flex flex-col h-full overflow-y-auto">
         {/* Header Section */}
         <div className="text-center mb-10 pt-6">

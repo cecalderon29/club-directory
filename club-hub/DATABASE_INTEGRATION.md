@@ -19,7 +19,6 @@ Stores all club information.
 - `instagram_url` (VARCHAR(255)) - Instagram URL
 - `twitter_url` (VARCHAR(255)) - Twitter URL
 - `facebook_url` (VARCHAR(255)) - Facebook URL
-- `remind_url` (VARCHAR(255)) - Remind URL
 
 #### `student_favorites`
 Tracks which clubs students have favorited.

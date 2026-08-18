@@ -13,12 +13,17 @@
     },
     "socials": {
         "instagram": "@nchs_drama",
-        "facebook": "nchsdrama",
-        "remind": "@actnow"
+        "facebook": "nchsdrama"
     },
     "events": [
-        { "name": "Fall Play Auditions", "date": "Sept 12" },
-        { "name": "Tech Crew Info Session", "date": "Sept 14" }
+        {
+            "name": "Fall Play Auditions",
+            "date": "Sept 12"
+        },
+        {
+            "name": "Tech Crew Info Session",
+            "date": "Sept 14"
+        }
     ],
     "images": [
         "https://images.unsplash.com/photo-1507676184212-d0330a15233c?auto=format&fit=crop&w=800&q=80",

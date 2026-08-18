@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import NavItem from './NavItem';
 import { DemoAccount } from '../contexts/AccountContext';
+import { canAccessAdmin } from '@/lib/demo-auth';
 
 interface SidebarProps {
   isDarkMode: boolean;
@@ -82,7 +83,7 @@ const SidebarComponent: React.FC<SidebarProps> = ({
           <NavItem id="home" label="Home" icon={<Home size={20} />} href="/dashboard" activeId={activeTab} onNavigate={onNavigate} isCollapsed={isCollapsed} />
           <NavItem id="clubs" label="Clubs" icon={<Users size={20} />} href="/clubs" activeId={activeTab} onNavigate={onNavigate} isCollapsed={isCollapsed} />
           <NavItem id="calendar" label="Calendar" icon={<CalendarIcon size={20} />} href="/calendar" activeId={activeTab} onNavigate={onNavigate} isCollapsed={isCollapsed} />
-          {currentAccount.role === "teacher" && (
+          {canAccessAdmin(currentAccount) && (
             <NavItem id="admin" label="Admin" icon={<Shield size={20} />} href="/admin" activeId={activeTab} onNavigate={onNavigate} isCollapsed={isCollapsed} />
           )}
         </nav>
