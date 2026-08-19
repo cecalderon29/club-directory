@@ -31,9 +31,9 @@ interface CalendarEvent {
 
 const MOCK_FAVORITES = [1, 3, 4];
 
-const CalendarPage = ({ clubsData: propClubs }: { clubsData?: Club[] }) => {
-  // Use prop clubs if provided, otherwise use server clubs
-  const clubsData = propClubs && propClubs.length > 0 ? propClubs : serverClubs;
+const CalendarPage = () => {
+  // Just use the directly imported data from getClubs()
+  const clubsData = serverClubs;
   
   // Navigation State
   const [currentDate, setCurrentDate] = useState(new Date());
